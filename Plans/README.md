@@ -155,8 +155,90 @@ Default flow:
 Archive flow:
 - Brainstorms-stage plan abandoned -> `Archived/Brainstorms/<plan-folder-name>`
 - Drafts-stage plan abandoned or reset-before-execution -> `Archived/Drafts/<plan-folder-name>`
-- InProgress-stage plan cancelled before completion -> `Archived/Drafts/<plan-folder-name>`
+- InProgress-stage plan cancelled before completion -> `Archived/Drafts/<plan-folder-name>` (must include `archive-note.md` fields `archived-from: InProgress` and `cancellation-state: cancelled`)
 - Completed plans aged out of recent view -> `Archived/CompletedHistory/<plan-folder-name>`
+
+## Stage Transition Protocols
+Planning phases and execution phases are different records. Do not collapse them into one mutable folder history.
+
+### Brainstorms -> Drafts
+Use this transition when doctrine-level exploration is stable enough to become an implementation-ready draft.
+
+Required promotion behavior:
+- Promotion occurs on `main`/trunk as planning work.
+- Keep brainstorm context available for audit.
+- Create or refresh `Plans/Drafts/<plan-slug>/` with draft-authoritative plan content.
+- Carry forward only the validated decisions/contracts/risks needed for execution planning.
+- Compile the draft and keep the compiled file inside the draft folder.
+- Mark draft step status according to planning completion, not implementation completion.
+
+### Drafts -> InProgress
+Use this transition only after explicit user approval.
+
+Required promotion behavior:
+- Promotion occurs on `main`/trunk as a planning-only commit.
+- Do not move the draft folder into `InProgress`.
+- Freeze draft as planning baseline and keep it unchanged except explicit typo-level corrections.
+- Typo-level means spelling, grammar, formatting, or link-fix updates only (no semantic planning change).
+- Any semantic change after freeze requires a new draft revision folder (for example `<plan-slug>-r2`) and a new promotion.
+- Create `Plans/InProgress/<plan-slug>/` as execution-shaped plan content.
+- Rebuild execution `steps/` for implementation work (do not reuse planning step tracker as implementation tracker).
+- Add promotion trace file in `InProgress` (for example `promotion.md`) with:
+  - source draft path,
+  - source commit SHA,
+  - promotion date,
+  - transformation summary (copied vs reshaped content).
+- After promotion commit on `main`, create execution branch `feature/<plan-slug>` and run implementation there.
+
+### InProgress -> Completed
+Use this transition after implementation finishes and validation evidence is complete.
+
+Required closure behavior:
+- Build closure artifacts on the execution feature branch.
+- Build a completed package at:
+  - `Plans/Completed/<plan-slug>/`
+- Completed package standard:
+  - `draft-baseline/`
+    - `<plan-slug>-draft.md`
+    - `source-ref.md`
+  - `implementation/`
+    - verbatim snapshot of `Plans/InProgress/<plan-slug>/` at merge-target commit, including `plan.md`, `steps/`, `notes/`, `artifacts/`, `validation/`, `decisions/`, and `risks/`
+  - `closeout/`
+    - `closeout.md`
+    - `outcomes.md`
+    - `traceability.md` (draft-step -> execution-step -> evidence mapping)
+    - `archive-note.md`
+- When closure package and cleanup commits are present on the feature branch, explicitly signal PR-ready handoff to the user.
+- User manually creates and merges the PR.
+- Closure is finalized on `main`/trunk only after PR merge.
+- Keep phase history inside `Completed` package. Do not require traversal of old active folders for review.
+
+### Active Folder Cleanup Rule
+After completed package is committed, clean active stage folders in a separate commit.
+
+Required cleanup behavior:
+- Commit 1: create/update `Plans/Completed/<plan-slug>/...` package.
+- Commit 2: delete:
+  - `Plans/Drafts/<plan-slug>/`
+  - `Plans/InProgress/<plan-slug>/`
+- Record required SHAs in `draft-baseline/source-ref.md` and/or `closeout/traceability.md`:
+  - source draft commit SHA (frozen draft baseline),
+  - promotion commit SHA (`Drafts -> InProgress`),
+  - feature branch base commit SHA,
+  - merge commit SHA (populate after merge if unknown at PR creation time),
+  - completed-package commit SHA,
+  - cleanup commit SHA.
+- Goal: keep active planning roots clean and avoid long-term repo noise in working stages.
+
+### Status Tracker Semantics by Phase
+Do not reuse one status tracker 1:1 across all phases.
+
+Rules:
+- `Brainstorms`: tracker reflects exploration maturity only.
+- `Drafts`: tracker reflects planning completeness and contract clarity.
+- `InProgress`: tracker reflects execution/testing/evidence completion.
+- `Completed`: closeout checklist confirms DoD, validation, and final outcomes.
+- `closeout/traceability.md` is the continuity link across phase-specific trackers.
 
 ## Git Branching and Commit Flow
 Planning workflow and coding workflow are intentionally different.
@@ -183,10 +265,12 @@ Execution default:
 
 PR ownership:
 - Feature branches are prepared by implementation work and handed to the user for PR creation/merge.
+- Agents do not open PRs; they must explicitly signal PR readiness and wait for user PR creation/merge.
 - Direct implementation commits to `main`/trunk are not allowed for InProgress work.
 
 Minor exception:
 - Small documentation-only updates can be done without a feature branch only when they are not tied to an active `Plans/InProgress/...` plan.
+- Docs-only allowlist for this exception: `Plans/**` and `Docs/**` (when present).
 - Docs-only means no changes under project code folders (`Source/`, `Tests/` when present), build or CI config, container definitions, migrations, or runtime configuration.
 - If a change can affect runtime, build, test behavior, or deployment, it requires a feature branch.
 
@@ -197,6 +281,7 @@ In-flight dependency documentation rule:
   - return to the feature execution flow immediately.
 - If the dependency requires a global doctrine/template change:
   - create a separate planning change on `main`/trunk as its own scoped planning update,
+  - add a link-back note in the active `Plans/InProgress/<plan-folder-name>/notes/` with the planning change commit SHA and one-line rationale,
   - do not mix global planning mutations into the active implementation branch unless explicitly requested.
 - Goal: document needed context without losing implementation focus.
 
@@ -214,7 +299,7 @@ Commit reliability standard:
 `Plans/Archived/CompletedHistory` is long-term history.
 
 Working policy:
-- Keep recently completed plans in `Plans/Completed`.
+- Keep recently completed plan packages in `Plans/Completed`.
 - Move older completed plans to `Plans/Archived/CompletedHistory` on a regular cadence.
 - When moving, keep folder contents intact and add/update `archive-note.md` with reason and move date.
 
@@ -273,11 +358,17 @@ A plan cannot move to `InProgress` unless:
 - Touchpoints are concrete.
 - Risks and mitigations are captured.
 - Validation approach is defined.
+- Draft baseline is frozen and traceable to source commit SHA.
+- `InProgress` tracker is reset for execution scope (not copied as completed from draft planning).
 
 A plan cannot move to `Completed` unless:
 - DoD is satisfied.
 - Validation evidence is present.
 - Follow-up work is documented (if any).
+- `Plans/Completed/<plan-slug>/` package exists with `draft-baseline/`, `implementation/`, and `closeout/`.
+- `closeout/traceability.md` maps draft intent to execution evidence.
+- PR-ready handoff was explicitly signaled to the user and the user-owned PR was merged to `main`/trunk.
+- Active folder cleanup commit is completed (`Drafts` and `InProgress` plan folders removed).
 
 ## .NET/C# Coding Best Practices
 This workspace is primarily .NET/C# and should follow DDD and SOLID.
