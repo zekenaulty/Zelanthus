@@ -284,6 +284,39 @@ public sealed class ChainRunnerContractProofTests
     }
 
     [Fact]
+    public async Task ChainRunner_ConversationalChain_OutOfRangeResumeIndex_EmitsInvalidStateTransition()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "out-of-range-resume",
+            WorkflowKind.ConversationalChain,
+            [CreateWorkflowStep("0010-conversation-step", StepKind.ConversationStep)]);
+
+        var runCursor = new WorkflowRunCursor(
+            Guid.NewGuid(),
+            workflow.WorkflowKey,
+            workflow.WorkflowVersion,
+            workflow.WorkflowKind,
+            RunState.Created,
+            currentStepIndex: 2,
+            lastSuccessStepIndex: 0,
+            nextTurnIndex: 0,
+            nextCheckpointSequence: 0,
+            latestThinkingPersistenceKey: null);
+
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(RunState.FailedTerminal, result.WorkflowRunCursor.RunState);
+        Assert.Equal(0, stepExecutor.Invocations);
+    }
+
+    [Fact]
     public async Task ChainRunner_WorkflowIdentityMismatch_EmitsInvalidStateTransition()
     {
         var workflow = CreateWorkflowDefinition(
@@ -313,6 +346,28 @@ public sealed class ChainRunnerContractProofTests
         Assert.False(result.IsSuccess);
         Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
         Assert.Equal(0, stepExecutor.Invocations);
+    }
+
+    [Fact]
+    public async Task ChainRunner_CancellationDuringStepExecution_TransitionsRunStateToCancelled()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "step-cancellation",
+            WorkflowKind.CognitiveChain,
+            [CreateWorkflowStep("0010-plan-step", StepKind.PlanStep)]);
+
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
+        var stepExecutor = new CanceledStepExecutor();
+        var runner = new WorkflowRunner(stepExecutor);
+
+        using var cancellation = new CancellationTokenSource();
+        await cancellation.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor), cancellation.Token));
+
+        Assert.Equal(RunState.Cancelled, runCursor.RunState);
+        Assert.Equal(1, stepExecutor.Invocations);
     }
 
     [Theory]
@@ -639,6 +694,22 @@ public sealed class ChainRunnerContractProofTests
             }
 
             return result;
+        }
+    }
+
+    private sealed class CanceledStepExecutor : IWorkflowStepExecutor
+    {
+        public int Invocations { get; private set; }
+
+        public Task<WorkflowStepExecutionResult> ExecuteAsync(
+            WorkflowStepExecutionContext executionContext,
+            CancellationToken cancellationToken = default)
+        {
+            Invocations++;
+            var canceledToken = cancellationToken.IsCancellationRequested
+                ? cancellationToken
+                : new CancellationToken(canceled: true);
+            return Task.FromCanceled<WorkflowStepExecutionResult>(canceledToken);
         }
     }
 }

@@ -46,62 +46,84 @@ public sealed class WorkflowRunner : IWorkflowRunner
         var stepIndex = resumeStart.StartStepIndex;
         policyReasonCode = resumeStart.PolicyReasonCode;
 
+        if (stepIndex > effectiveSteps.Count)
+        {
+            runCursor.MarkTerminalFailure();
+            return WorkflowExecutionResult.TerminalFailure(
+                RunnerReasonCodes.InvalidStateTransition,
+                runCursor,
+                effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                policyReasonCode);
+        }
+
         runCursor.TransitionRunState(RunState.Running);
 
-        while (stepIndex < effectiveSteps.Count)
+        try
         {
-            var step = effectiveSteps[stepIndex];
-            if (step.PromptReference is null)
+            while (stepIndex < effectiveSteps.Count)
             {
-                runCursor.MarkTerminalFailure();
-                return WorkflowExecutionResult.TerminalFailure(
-                    RunnerReasonCodes.MissingPromptReference,
-                    runCursor,
-                    effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
-                    policyReasonCode);
-            }
-
-            var executionContext = new WorkflowStepExecutionContext(
-                workflowDefinition,
-                step,
-                stepIndex,
-                runCursor);
-
-            var stepResult = await _workflowStepExecutor.ExecuteAsync(executionContext, cancellationToken).ConfigureAwait(false);
-            if (!stepResult.IsSuccess)
-            {
-                if (stepResult.IsRetryableFailure)
+                var step = effectiveSteps[stepIndex];
+                if (step.PromptReference is null)
                 {
-                    runCursor.MarkStepRetryableFailure();
-                    return WorkflowExecutionResult.RetryableFailure(
+                    runCursor.MarkTerminalFailure();
+                    return WorkflowExecutionResult.TerminalFailure(
+                        RunnerReasonCodes.MissingPromptReference,
+                        runCursor,
+                        effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                        policyReasonCode);
+                }
+
+                var executionContext = new WorkflowStepExecutionContext(
+                    workflowDefinition,
+                    step,
+                    stepIndex,
+                    runCursor);
+
+                var stepResult = await _workflowStepExecutor.ExecuteAsync(executionContext, cancellationToken).ConfigureAwait(false);
+                if (!stepResult.IsSuccess)
+                {
+                    if (stepResult.IsRetryableFailure)
+                    {
+                        runCursor.MarkStepRetryableFailure();
+                        return WorkflowExecutionResult.RetryableFailure(
+                            stepResult.ReasonCode!,
+                            runCursor,
+                            effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                            policyReasonCode);
+                    }
+
+                    runCursor.MarkTerminalFailure();
+                    return WorkflowExecutionResult.TerminalFailure(
                         stepResult.ReasonCode!,
                         runCursor,
                         effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
                         policyReasonCode);
                 }
 
-                runCursor.MarkTerminalFailure();
-                return WorkflowExecutionResult.TerminalFailure(
-                    stepResult.ReasonCode!,
-                    runCursor,
-                    effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
-                    policyReasonCode);
+                if (stepResult.AppendedSteps.Count > 0)
+                {
+                    effectiveSteps.AddRange(stepResult.AppendedSteps);
+                }
+
+                runCursor.MarkStepSucceeded(stepIndex, stepResult.LatestThinkingPersistenceKey);
+                stepIndex = runCursor.CurrentStepIndex;
             }
 
-            if (stepResult.AppendedSteps.Count > 0)
-            {
-                effectiveSteps.AddRange(stepResult.AppendedSteps);
-            }
-
-            runCursor.MarkStepSucceeded(stepIndex, stepResult.LatestThinkingPersistenceKey);
-            stepIndex = runCursor.CurrentStepIndex;
+            runCursor.TransitionRunState(RunState.Succeeded);
+            return WorkflowExecutionResult.Succeeded(
+                runCursor,
+                effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                policyReasonCode);
         }
+        catch (OperationCanceledException)
+        {
+            if (RunStateTransitionRules.IsValidTransition(runCursor.RunState, RunState.Cancelled))
+            {
+                runCursor.TransitionRunState(RunState.Cancelled);
+            }
 
-        runCursor.TransitionRunState(RunState.Succeeded);
-        return WorkflowExecutionResult.Succeeded(
-            runCursor,
-            effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
-            policyReasonCode);
+            throw;
+        }
     }
 
     private static bool IsWorkflowKindAligned(WorkflowKind workflowKind, WorkflowKind runWorkflowKind)
