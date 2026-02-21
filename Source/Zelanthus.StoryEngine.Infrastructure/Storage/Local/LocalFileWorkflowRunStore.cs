@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Zelanthus.StoryEngine.Infrastructure.Storage;
+namespace Zelanthus.StoryEngine.Infrastructure.Storage.Local;
 
 public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
 {

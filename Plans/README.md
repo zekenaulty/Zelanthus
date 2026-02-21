@@ -384,6 +384,10 @@ Rules:
 - Do not keep feature classes in project root folders.
 - Project-root `.cs` allowlist is only `Program.cs` and `GlobalUsings.cs`; all other source files must be folderized by concern.
 - Use semantic folders and matching namespaces (for example `Contracts/` -> `.Contracts`, `Workflows/` -> `.Workflows`, `Storage/` -> `.Storage`).
+- Treat one-tier folderization as a minimum baseline, not an end state.
+- If a folder starts accumulating mixed concerns, split immediately into second-tier semantic folders and namespaces.
+- High-change surfaces must use deeper isolation early (for example `Application/Contracts/RunExecution` vs `Application/Contracts/StepExecution`).
+- Storage concerns must isolate backend types by folder/namespace (for example `Storage/Local`, `Storage/Postgres`) with shared abstractions and records separated from implementations.
 - Use composition and explicit interfaces where they add boundary clarity.
 - Keep naming semantic and domain-aligned.
 - Keep test project names semantic and purpose-based (for example `Zelanthus.WorkflowContractProofs.Tests`).

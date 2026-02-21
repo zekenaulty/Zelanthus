@@ -31,6 +31,9 @@ Source layout and namespace isolation:
   - `GlobalUsings.cs`
 - All other source files must live in semantic subfolders (for example `Contracts/`, `Models/`, `Policies/`, `Storage/`, `Workflows/`).
 - Namespaces must follow folder scope and semantic meaning (for example `Zelanthus.StoryEngine.Application.Contracts` for files under `Contracts/`).
+- One-tier isolation is minimum only. If a folder starts mixing responsibilities, split into second-tier folders and namespaces immediately.
+- High-churn boundaries (especially `Application/Contracts` and `Infrastructure/Storage`) must use second-tier namespaces by concern.
+- Storage implementations must be isolated by backend type (for example `Storage/Local`, `Storage/Postgres`) with shared abstractions/records in their own namespaces.
 - If a file name needs scope tokens to stay understandable, split by folder and narrow namespace instead.
 - `ChainMode` ownership is `Zelanthus.Llm.Clients.Abstractions.Enums` only; domain workflow mode is represented by `WorkflowKind`.
 

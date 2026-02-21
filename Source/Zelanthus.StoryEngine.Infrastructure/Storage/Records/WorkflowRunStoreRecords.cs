@@ -1,4 +1,4 @@
-namespace Zelanthus.StoryEngine.Infrastructure.Storage;
+namespace Zelanthus.StoryEngine.Infrastructure.Storage.Records;
 
 public sealed record WorkflowRunRecord(
     Guid RunId,

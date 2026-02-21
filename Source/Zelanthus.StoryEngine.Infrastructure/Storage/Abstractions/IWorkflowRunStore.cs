@@ -1,4 +1,4 @@
-namespace Zelanthus.StoryEngine.Infrastructure.Storage;
+namespace Zelanthus.StoryEngine.Infrastructure.Storage.Abstractions;
 
 public interface IWorkflowRunStore
 {

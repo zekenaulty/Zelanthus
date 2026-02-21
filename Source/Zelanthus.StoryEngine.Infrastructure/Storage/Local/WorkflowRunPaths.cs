@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Zelanthus.StoryEngine.Infrastructure.Storage;
+namespace Zelanthus.StoryEngine.Infrastructure.Storage.Local;
 
 public sealed partial class WorkflowRunPaths
 {

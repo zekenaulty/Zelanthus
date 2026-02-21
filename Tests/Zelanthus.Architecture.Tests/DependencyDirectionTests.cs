@@ -161,6 +161,40 @@ public sealed class DependencyDirectionTests
         }
     }
 
+    [Fact]
+    public void StoryEngineApplication_ContractsUseSecondTierNamespaces()
+    {
+        var applicationAssembly = Assembly.Load("Zelanthus.StoryEngine.Application");
+        var types = applicationAssembly.GetTypes();
+
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Application.Contracts.RunExecution.IWorkflowRunner");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Application.Contracts.RunExecution.WorkflowExecutionRequest");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Application.Contracts.RunExecution.WorkflowExecutionResult");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Application.Contracts.StepExecution.IWorkflowStepExecutor");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Application.Contracts.StepExecution.WorkflowStepExecutionContext");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Application.Contracts.StepExecution.WorkflowStepExecutionResult");
+
+        Assert.DoesNotContain(
+            types,
+            type => string.Equals(type.Namespace, "Zelanthus.StoryEngine.Application.Contracts", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void StoryEngineInfrastructure_StorageIsIsolatedByTierAndBackend()
+    {
+        var infrastructureAssembly = Assembly.Load("Zelanthus.StoryEngine.Infrastructure");
+        var types = infrastructureAssembly.GetTypes();
+
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Infrastructure.Storage.Abstractions.IWorkflowRunStore");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Infrastructure.Storage.Records.WorkflowRunRecord");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Infrastructure.Storage.Local.LocalFileWorkflowRunStore");
+        Assert.Contains(types, type => type.FullName == "Zelanthus.StoryEngine.Infrastructure.Storage.Local.WorkflowRunPaths");
+
+        Assert.DoesNotContain(
+            types,
+            type => string.Equals(type.Namespace, "Zelanthus.StoryEngine.Infrastructure.Storage", StringComparison.Ordinal));
+    }
+
     private static HashSet<string> GetZelanthusReferences(string assemblyName)
     {
         var assembly = Assembly.Load(assemblyName);

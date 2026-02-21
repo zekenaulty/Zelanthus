@@ -1,4 +1,4 @@
-namespace Zelanthus.StoryEngine.Application.Contracts;
+namespace Zelanthus.StoryEngine.Application.Contracts.StepExecution;
 
 public sealed class WorkflowStepExecutionResult
 {
