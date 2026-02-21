@@ -11,7 +11,7 @@
 - `feature/thin-clients-first-solution-structure`
 
 ## Commits
-- `none`
+- `952c43f705d35adf53fe53bcd7f6c645cfb6f367`
 
 ## Commands Executed
 - `dotnet build "Zelanthus.slnx"`
