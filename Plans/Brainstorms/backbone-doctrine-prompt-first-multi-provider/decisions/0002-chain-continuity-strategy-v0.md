@@ -5,10 +5,11 @@
 
 ## Decision Summary
 - Zelanthus supports two chain modes:
-  - `CognitiveChain`: plan/think turn followed by execute/output turn.
+  - `CognitiveChain`: plan/think turn followed by execute/output turn as a base unit.
   - `ConversationalChain`: interaction-driven multi-turn flow with explicit turn artifacts.
 - Provider continuity and thought handles are first-class capabilities.
 - Hidden continuity state is never authoritative resume state.
+- `T1` -> `T2` is minimum chain unit semantics, not a hard cap on chain length.
 
 ## Context
 - Thought-heavy models can consume large token budgets before producing required output artifacts.
@@ -20,6 +21,7 @@
   - `T1` objective: produce explicit compact plan artifact and optional continuity handle.
   - `T2` objective: produce contract-valid output from plan artifact.
   - `T2` must not run without a valid plan artifact.
+  - Additional `T1`/`T2` units may be executed when workflow scope requires multi-step planning/execution.
 - `ConversationalChain`:
   - Every turn is persisted with explicit turn metadata and output artifacts.
   - Conversation context can inform behavior, but contract validity is still checked per turn.

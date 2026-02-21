@@ -23,3 +23,9 @@
 - Impact: Early coupling and architecture debt.
 - Mitigation: Add architecture tests as an MVP gate in Plan 1 work.
 - Status: open
+
+## R-005 Two-Turn Lock-In Risk
+- Statement: Treating `T1` -> `T2` as a fixed runner design (instead of minimum proof path) can block required multi-step chain workflows.
+- Impact: Early rework in Plan 2 runner orchestration and persistence shape.
+- Mitigation: Explicitly require chain-length-flexible runner contracts for both `CognitiveChain` and `ConversationalChain` in Plan 2 draft.
+- Status: open

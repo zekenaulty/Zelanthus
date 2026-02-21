@@ -216,6 +216,7 @@
 - Infrastructure/Config:
   - Plan 1 persistence scope is test proof-artifact output only (repo-local artifacts), not StoryEngine persistence infrastructure.
   - Plan 2 will own runner/persistence infrastructure planning and implementation details.
+  - Plan 2 local persistence target is workspace-local file/path-backed storage for runner checkpoints/artifacts/provenance (not external database/cache/queue/service storage).
 
 ## Risks and Mitigations
 - Risk: Gemini integration variance causes unstable harness outcomes.

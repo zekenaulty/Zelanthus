@@ -3,7 +3,7 @@
 ## Compiled Plan Metadata
 
 - Plan Scope: `Drafts/mvp-prompting-gemini-contract-baseline`
-- Compiled At (UTC): `2026-02-21T05:53:41Z`
+- Compiled At (UTC): `2026-02-21T06:02:10Z`
 - Source Document Count: `14`
 - Projection File: `mvp-prompting-gemini-contract-baseline.md`
 
@@ -246,6 +246,7 @@
 - Infrastructure/Config:
   - Plan 1 persistence scope is test proof-artifact output only (repo-local artifacts), not StoryEngine persistence infrastructure.
   - Plan 2 will own runner/persistence infrastructure planning and implementation details.
+  - Plan 2 local persistence target is workspace-local file/path-backed storage for runner checkpoints/artifacts/provenance (not external database/cache/queue/service storage).
 
 ## Risks and Mitigations
 - Risk: Gemini integration variance causes unstable harness outcomes.

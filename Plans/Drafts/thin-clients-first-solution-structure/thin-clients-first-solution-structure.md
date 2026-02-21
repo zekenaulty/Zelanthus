@@ -3,7 +3,7 @@
 ## Compiled Plan Metadata
 
 - Plan Scope: `Drafts/thin-clients-first-solution-structure`
-- Compiled At (UTC): `2026-02-21T05:30:39Z`
+- Compiled At (UTC): `2026-02-21T06:02:38Z`
 - Source Document Count: `27`
 - Projection File: `thin-clients-first-solution-structure.md`
 
@@ -69,7 +69,7 @@
 - Draft Plan 1 package exists and is linked for downstream implementation planning.
 - Draft step sequencing is explicit for:
   - Plan 1: Prompting + abstractions + Gemini baseline.
-  - Plan 2: CognitiveChain runner + local artifact/provenance persistence.
+  - Plan 2: CognitiveChain/ConversationalChain runner + local artifact/provenance persistence (minimum proof includes one `T1` -> `T2` pair, but runner is not capped at two turns).
 - Thin-clients draft risk log exists and captures current high-risk uncertainties.
 
 ## Cross-Plan Dependencies
@@ -123,7 +123,13 @@
   - `Plans/Drafts/thin-clients-first-solution-structure/risks/risk-log.md`
   - `Plans/Drafts/mvp-prompting-gemini-contract-baseline/plan.md`
 - Infrastructure/Config:
-  - local MVP persistence only (path/file-backed baseline; no Postgres setup in this draft)
+  - local MVP persistence only (path/file-backed baseline; no Postgres setup in this draft).
+  - local persistence in this scope means workspace-local storage of:
+    - turn artifacts/checkpoints,
+    - raw response snapshots,
+    - provenance records,
+    - validation/failure outputs needed for deterministic resume/replay.
+  - local persistence in this scope excludes external database, distributed cache, queue, or service-hosted storage.
 
 ## Risks and Mitigations
 - Risk: Project split introduces too many assemblies too early.
@@ -167,6 +173,9 @@
 
 ## Notes
 - Long-term production persistence target is Postgres, but this draft keeps persistence local and minimal to avoid out-of-order setup.
+- Plan 2 runner design is chain-length-flexible:
+  - `CognitiveChain` can execute multiple planned turns/steps (not only two).
+  - `ConversationalChain` supports multi-turn progression using explicit persisted turn artifacts.
 
 ---
 
@@ -263,7 +272,10 @@
 - Minimum slice to validate backbone doctrine before broad StoryEngine expansion:
   - `Zelanthus.Prompting` contract implementation (identity/version/render/checksum/provenance hooks),
   - `Zelanthus.Llm.Clients.Abstractions` + `Zelanthus.Llm.Clients.Gemini` with capability profile and normalized metadata,
-  - one minimal runner executing a single `CognitiveChain` step pair (`T1` + `T2`) with persisted artifacts/provenance.
+  - one minimal runner proving at least one `CognitiveChain` step pair (`T1` + `T2`) with persisted artifacts/provenance.
+- Clarification:
+  - `T1` + `T2` is the minimum acceptance proof path, not a runner turn-limit.
+  - Runner design must allow multi-turn/multi-step execution for both `CognitiveChain` and `ConversationalChain`.
 - This slice is the acceptance gate for promoting broad StoryEngine implementation scope.
 
 ## Entry and Exit Criteria
@@ -549,9 +561,15 @@
 
 ## Harness Requirement Contract (host-shape neutral)
 - Must execute a deterministic `CognitiveChain` style proof path (`T1` then `T2`) for at least one representative step.
+- `T1` -> `T2` is a minimum proof path, not a hard cap on total turns.
+- Plan 2 runner design must support variable-length chains for:
+  - `CognitiveChain` (multi-step planning/execution with thought-aware checkpoints),
+  - `ConversationalChain` (multi-turn chat-style flow with explicit turn artifacts).
 - Must run from one repeatable command path (for example `dotnet test` or one explicit host command).
 - Must capture raw response snapshot reference plus normalized metadata.
 - Must persist provenance and validation/failure outcome artifacts locally.
+- Local persistence in MVP means workspace-local file/path-backed storage for artifacts/checkpoints/provenance/failures only.
+- Local persistence in MVP excludes external database/cache/queue/service-hosted storage.
 - Must support clear failure reason code reporting for MVP baseline codes.
 
 ## Candidate Harness Shapes (decision deferred to step `0090`)
@@ -691,6 +709,12 @@
 - Mitigation: Add architecture tests as an MVP gate in Plan 1 work.
 - Status: open
 
+## R-005 Two-Turn Lock-In Risk
+- Statement: Treating `T1` -> `T2` as a fixed runner design (instead of minimum proof path) can block required multi-step chain workflows.
+- Impact: Early rework in Plan 2 runner orchestration and persistence shape.
+- Mitigation: Explicitly require chain-length-flexible runner contracts for both `CognitiveChain` and `ConversationalChain` in Plan 2 draft.
+- Status: open
+
 ---
 
 ## Source 12: `steps/index.md`
@@ -715,7 +739,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 | 0090 | `0090-choose-mvp-harness-shape` | `completed` | `0080-lock-mvp-goals-and-first-plan-boundary` | Selected test-host baseline (`Tests/Zelanthus.WorkflowContractProofs.Tests`); API-host deferred by criteria |
 | 0100 | `0100-draft-plan-1-prompting-and-gemini-contract-implementation` | `completed` | `0090-choose-mvp-harness-shape` | Created `mvp-prompting-gemini-contract-baseline` draft plan package with explicit scope, DoD, and step map |
 | 0105 | `0105-clarify-contract-proof-test-naming` | `completed` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation` | Locked semantic naming policy for contract-proof test project and seed test names |
-| 0110 | `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence` | `pending` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation`, `0105-clarify-contract-proof-test-naming` | Produce implementation-ready Draft Plan 2 for CognitiveChain runner and local persistence |
+| 0110 | `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence` | `pending` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation`, `0105-clarify-contract-proof-test-naming` | Produce implementation-ready Draft Plan 2 for chain-length-flexible Cognitive/Conversational runner behavior and workspace-local persistence |
 
 ## Status Values
 - `pending`
@@ -1225,10 +1249,11 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 # Step: 0110-draft-plan-2-cognitive-chain-runner-and-local-persistence
 
 ## Goal
-- Produce implementation-ready Draft Plan 2 for the MVP CognitiveChain runner and local artifact/provenance persistence.
+- Produce implementation-ready Draft Plan 2 for chain-length-flexible `CognitiveChain`/`ConversationalChain` runner behavior and local artifact/provenance persistence.
 
 ## Context
 - Plan 2 depends on Plan 1 contract outputs and should avoid premature production persistence setup.
+- Plan 2 must not hard-lock runner flow to two turns; `T1` -> `T2` is minimum proof only.
 
 ## Git Branch
 - `main`
@@ -1255,7 +1280,12 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - `pending`
 
 ## Next Actions
-- Define runner acceptance criteria, local persistence boundaries, and migration constraints toward future Postgres.
+- Define runner acceptance criteria for variable-length `CognitiveChain` and `ConversationalChain` flows.
+- Define local persistence boundaries:
+  - workspace-local file/path-backed storage for checkpoints/artifacts/provenance/failures,
+  - deterministic resume/replay from persisted artifacts,
+  - no external database/cache/queue/service storage in Plan 2.
+- Define migration constraints toward future Postgres.
 
 ---
 

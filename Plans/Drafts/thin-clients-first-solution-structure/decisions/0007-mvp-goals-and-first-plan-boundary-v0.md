@@ -35,9 +35,15 @@
 
 ## Harness Requirement Contract (host-shape neutral)
 - Must execute a deterministic `CognitiveChain` style proof path (`T1` then `T2`) for at least one representative step.
+- `T1` -> `T2` is a minimum proof path, not a hard cap on total turns.
+- Plan 2 runner design must support variable-length chains for:
+  - `CognitiveChain` (multi-step planning/execution with thought-aware checkpoints),
+  - `ConversationalChain` (multi-turn chat-style flow with explicit turn artifacts).
 - Must run from one repeatable command path (for example `dotnet test` or one explicit host command).
 - Must capture raw response snapshot reference plus normalized metadata.
 - Must persist provenance and validation/failure outcome artifacts locally.
+- Local persistence in MVP means workspace-local file/path-backed storage for artifacts/checkpoints/provenance/failures only.
+- Local persistence in MVP excludes external database/cache/queue/service-hosted storage.
 - Must support clear failure reason code reporting for MVP baseline codes.
 
 ## Candidate Harness Shapes (decision deferred to step `0090`)

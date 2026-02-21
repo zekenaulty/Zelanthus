@@ -26,7 +26,7 @@
 - Draft Plan 1 package exists and is linked for downstream implementation planning.
 - Draft step sequencing is explicit for:
   - Plan 1: Prompting + abstractions + Gemini baseline.
-  - Plan 2: CognitiveChain runner + local artifact/provenance persistence.
+  - Plan 2: CognitiveChain/ConversationalChain runner + local artifact/provenance persistence (minimum proof includes one `T1` -> `T2` pair, but runner is not capped at two turns).
 - Thin-clients draft risk log exists and captures current high-risk uncertainties.
 
 ## Cross-Plan Dependencies
@@ -80,7 +80,13 @@
   - `Plans/Drafts/thin-clients-first-solution-structure/risks/risk-log.md`
   - `Plans/Drafts/mvp-prompting-gemini-contract-baseline/plan.md`
 - Infrastructure/Config:
-  - local MVP persistence only (path/file-backed baseline; no Postgres setup in this draft)
+  - local MVP persistence only (path/file-backed baseline; no Postgres setup in this draft).
+  - local persistence in this scope means workspace-local storage of:
+    - turn artifacts/checkpoints,
+    - raw response snapshots,
+    - provenance records,
+    - validation/failure outputs needed for deterministic resume/replay.
+  - local persistence in this scope excludes external database, distributed cache, queue, or service-hosted storage.
 
 ## Risks and Mitigations
 - Risk: Project split introduces too many assemblies too early.
@@ -124,3 +130,6 @@
 
 ## Notes
 - Long-term production persistence target is Postgres, but this draft keeps persistence local and minimal to avoid out-of-order setup.
+- Plan 2 runner design is chain-length-flexible:
+  - `CognitiveChain` can execute multiple planned turns/steps (not only two).
+  - `ConversationalChain` supports multi-turn progression using explicit persisted turn artifacts.
