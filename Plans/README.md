@@ -153,10 +153,10 @@ Default flow:
 4. `Completed`
 
 Archive flow:
-- Brainstorms-stage plan abandoned -> `Archived/Brainstorms/<plan-folder>`
-- Drafts-stage plan abandoned or reset-before-execution -> `Archived/Drafts/<plan-folder>`
-- InProgress-stage plan cancelled before completion -> `Archived/Drafts/<plan-folder>`
-- Completed plans aged out of recent view -> `Archived/CompletedHistory/<plan-folder>`
+- Brainstorms-stage plan abandoned -> `Archived/Brainstorms/<plan-folder-name>`
+- Drafts-stage plan abandoned or reset-before-execution -> `Archived/Drafts/<plan-folder-name>`
+- InProgress-stage plan cancelled before completion -> `Archived/Drafts/<plan-folder-name>`
+- Completed plans aged out of recent view -> `Archived/CompletedHistory/<plan-folder-name>`
 
 ## Git Branching and Commit Flow
 Planning workflow and coding workflow are intentionally different.
@@ -165,34 +165,49 @@ Planning default:
 - Planning and doctrine work should happen primarily on `main`/trunk.
 - `Brainstorms` and `Drafts` updates should stay focused on planning artifacts and decision clarity.
 
+Promotion gate:
+- `Drafts -> InProgress` promotion is owner-controlled.
+- Do not promote a plan unless the user explicitly approves promotion.
+- If promotion intent is unclear, stop and ask before moving a plan to `Plans/InProgress/...`.
+- Default promotion flow:
+  - make a planning-only promotion commit on `main`/trunk,
+  - then create the execution feature branch from that commit.
+
 Execution default:
 - Any plan promoted to `Plans/InProgress/...` must execute on a feature branch.
 - One active InProgress plan should map to one active feature branch whenever possible.
 - Branch naming pattern:
   - `feature/<plan-folder-name>`
   - optional: `feature/<plan-folder-name>-<short-scope>`
+  - follow-up/repeat work: `feature/<plan-folder-name>-r2` or `feature/<plan-folder-name>-followup-<slug>`
 
 PR ownership:
 - Feature branches are prepared by implementation work and handed to the user for PR creation/merge.
 - Direct implementation commits to `main`/trunk are not allowed for InProgress work.
 
 Minor exception:
-- Small documentation-only updates can be done without a feature branch when they are not tied to in-flight implementation risk.
-- Any code, config, migration, or test-impacting change still requires a feature branch.
+- Small documentation-only updates can be done without a feature branch only when they are not tied to an active `Plans/InProgress/...` plan.
+- Docs-only means no changes under project code folders (`Source/`, `Tests/` when present), build or CI config, container definitions, migrations, or runtime configuration.
+- If a change can affect runtime, build, test behavior, or deployment, it requires a feature branch.
 
 In-flight dependency documentation rule:
 - If you discover a new dependency while working in a feature branch:
-  - create the smallest possible planning note/brainstorm update to capture the dependency,
+  - capture the smallest possible note in the executing plan folder (`Plans/InProgress/<plan-folder-name>/notes/`) or a minimal scoped step folder,
   - avoid broad planning detours,
   - return to the feature execution flow immediately.
+- If the dependency requires a global doctrine/template change:
+  - create a separate planning change on `main`/trunk as its own scoped planning update,
+  - do not mix global planning mutations into the active implementation branch unless explicitly requested.
 - Goal: document needed context without losing implementation focus.
 
 Commit reliability standard:
 - Commits must be atomic and semantically meaningful.
 - Avoid noisy or generic commit messages.
 - Commits should not knowingly leave touched scope in a broken state.
+- Prefer commit message pattern: `<type>(<plan-slug>/<step-slug>): <semantic outcome>`.
 - If tests are not run, record that explicitly in the step note.
-- Step notes should reference the commits produced in that step.
+- Step notes must reference full commit SHAs produced in that step.
+- For non-trivial steps, include `git show --name-only <sha>` evidence in step-local artifacts or notes.
 
 ## Completed vs CompletedHistory
 `Plans/Completed` is a recent work shelf.
@@ -249,6 +264,7 @@ Each step note must include:
 
 ## Planning Quality Gates
 A plan cannot move to `InProgress` unless:
+- User explicitly approves promotion.
 - Definition of Done is explicit and testable.
 - Scope and out-of-scope are explicit.
 - Cross-plan dependencies are explicit and valid.
@@ -267,6 +283,10 @@ A plan cannot move to `Completed` unless:
 This workspace is primarily .NET/C# and should follow DDD and SOLID.
 
 Rules:
+- Target framework baseline is `.NET 10` (`net10.0`) unless explicitly approved otherwise.
+- New projects should align to `net10.0` to avoid versioning drift.
+- Do not mix target frameworks in active implementation scope without an explicit planning decision.
+- If dependencies force a framework shift, capture it in plan risks/decisions and request approval before changing targets.
 - Keep domain logic in domain layers, not controllers or infrastructure glue.
 - Use clear separation of concerns across Domain, Application, Infrastructure, and API.
 - Avoid monolithic files/classes; split by responsibility.

@@ -20,10 +20,10 @@ RUN apt-get update \
     clang zlib1g-dev
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Zelanthus.API/Zelanthus.API.csproj", "Zelanthus.API/"]
-RUN dotnet restore "./Zelanthus.API/Zelanthus.API.csproj"
+COPY ["Source/Zelanthus.API/Zelanthus.API.csproj", "Source/Zelanthus.API/"]
+RUN dotnet restore "./Source/Zelanthus.API/Zelanthus.API.csproj"
 COPY . .
-WORKDIR "/src/Zelanthus.API"
+WORKDIR "/src/Source/Zelanthus.API"
 RUN dotnet build "./Zelanthus.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
