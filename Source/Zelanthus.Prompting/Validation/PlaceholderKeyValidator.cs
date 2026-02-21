@@ -4,7 +4,9 @@ namespace Zelanthus.Prompting.Validation;
 
 internal static partial class PlaceholderKeyValidator
 {
-    [GeneratedRegex("^[a-z][a-z0-9_]*$", RegexOptions.CultureInvariant)]
+    private const string PlaceholderKeyPatternExpression = "^[a-z][a-z0-9_]*$";
+
+    [GeneratedRegex(PlaceholderKeyPatternExpression, RegexOptions.CultureInvariant)]
     private static partial Regex PlaceholderKeyPattern();
 
     public static string Validate(string placeholderKey)
@@ -27,7 +29,7 @@ internal static partial class PlaceholderKeyValidator
         if (!PlaceholderKeyPattern().IsMatch(placeholderKey))
         {
             throw new ArgumentException(
-                "Placeholder key must match ^[a-z][a-z0-9_]*$.",
+                $"Placeholder key must match {PlaceholderKeyPatternExpression}.",
                 nameof(placeholderKey));
         }
 
