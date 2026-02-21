@@ -13,6 +13,7 @@
 - `952c43f705d35adf53fe53bcd7f6c645cfb6f367`
 - `d1a05f72f904cd5d2081272d3627ec0f3a105620`
 - `e32c94d7f5df2c8a13c420f1645f9f4f8d2e6683`
+- `1235cb3545e3e6d52de3bc219805cee695d83973`
 
 ## Commands Executed
 - `dotnet new classlib -n Zelanthus.StoryEngine.Domain -f net10.0 -o "Source/Zelanthus.StoryEngine.Domain"`
@@ -27,6 +28,9 @@
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 - `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 - `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
@@ -56,6 +60,10 @@
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
 - `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
 - `Tests/Zelanthus.WorkflowContractProofs.Tests/ChainRunnerContractProofTests.cs`
+- `Source/Zelanthus.StoryEngine.Application/Orchestration/WorkflowRunner.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/Storage/Local/LocalFileWorkflowRunStore.cs`
+- `Source/Zelanthus.Llm.Clients.Gemini/Clients/GeminiLlmClient.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/GeminiAdapterContractProofTests.cs`
 
 ## Tests / Results
 - `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
@@ -63,6 +71,9 @@
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (14 tests)
 - `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (28 tests)
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (35 tests)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (31 tests)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (11 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (42 tests)
 
 ## Issues
 - none
