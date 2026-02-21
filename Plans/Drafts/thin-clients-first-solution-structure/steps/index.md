@@ -18,7 +18,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 | 0090 | `0090-choose-mvp-harness-shape` | `completed` | `0080-lock-mvp-goals-and-first-plan-boundary` | Selected test-host baseline (`Tests/Zelanthus.WorkflowContractProofs.Tests`); API-host deferred by criteria |
 | 0100 | `0100-draft-plan-1-prompting-and-gemini-contract-implementation` | `completed` | `0090-choose-mvp-harness-shape` | Created `mvp-prompting-gemini-contract-baseline` draft plan package with explicit scope, DoD, and step map |
 | 0105 | `0105-clarify-contract-proof-test-naming` | `completed` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation` | Locked semantic naming policy for contract-proof test project and seed test names |
-| 0110 | `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence` | `pending` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation`, `0105-clarify-contract-proof-test-naming` | Produce implementation-ready Draft Plan 2 for chain-length-flexible Cognitive/Conversational runner behavior and workspace-local persistence |
+| 0110 | `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence` | `completed` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation`, `0105-clarify-contract-proof-test-naming` | Created `mvp-chain-runner-local-persistence-baseline` draft package with dependency matrix, decisions, risk log, and acceptance evidence artifacts |
 
 ## Status Values
 - `pending`

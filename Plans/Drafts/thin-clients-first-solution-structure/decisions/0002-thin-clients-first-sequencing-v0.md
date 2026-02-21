@@ -30,9 +30,12 @@
 - Minimum slice to validate backbone doctrine before broad StoryEngine expansion:
   - `Zelanthus.Prompting` contract implementation (identity/version/render/checksum/provenance hooks),
   - `Zelanthus.Llm.Clients.Abstractions` + `Zelanthus.Llm.Clients.Gemini` with capability profile and normalized metadata,
-  - one minimal runner proving at least one `CognitiveChain` step pair (`T1` + `T2`) with persisted artifacts/provenance.
+  - one minimal runner proving at least one `CognitiveChain` step pair (`PLAN_STEP` + `EXECUTE`) with persisted artifacts/provenance.
 - Clarification:
-  - `T1` + `T2` is the minimum acceptance proof path, not a runner turn-limit.
+  - `PLAN_STEP` + `EXECUTE` is the minimum acceptance proof path, not a runner step-limit.
+  - `CognitiveChain` may stage multiple `PLAN_STEP` units before one or more `EXECUTE` units and may repeat `PLAN_STEP` -> `EXECUTE` cycles.
+  - `CognitiveChain` resume restarts from chain start to re-establish provider thinking continuity safely.
+  - `ConversationalChain` resumes from last successful persisted step.
   - Runner design must allow multi-turn/multi-step execution for both `CognitiveChain` and `ConversationalChain`.
 - This slice is the acceptance gate for promoting broad StoryEngine implementation scope.
 

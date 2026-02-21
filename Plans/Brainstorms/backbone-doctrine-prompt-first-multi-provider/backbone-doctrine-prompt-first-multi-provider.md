@@ -3,7 +3,7 @@
 ## Compiled Plan Metadata
 
 - Plan Scope: `Brainstorms/backbone-doctrine-prompt-first-multi-provider`
-- Compiled At (UTC): `2026-02-21T06:02:10Z`
+- Compiled At (UTC): `2026-02-21T08:45:35Z`
 - Source Document Count: `13`
 - Projection File: `backbone-doctrine-prompt-first-multi-provider.md`
 
@@ -177,11 +177,11 @@
 
 ## Decision Summary
 - Zelanthus supports two chain modes:
-  - `CognitiveChain`: plan/think turn followed by execute/output turn as a base unit.
+  - `CognitiveChain`: `PLAN_STEP` followed by `EXECUTE` as a base unit.
   - `ConversationalChain`: interaction-driven multi-turn flow with explicit turn artifacts.
 - Provider continuity and thought handles are first-class capabilities.
 - Hidden continuity state is never authoritative resume state.
-- `T1` -> `T2` is minimum chain unit semantics, not a hard cap on chain length.
+- `PLAN_STEP` -> `EXECUTE` is minimum chain unit semantics, not a hard cap on chain length.
 
 ## Context
 - Thought-heavy models can consume large token budgets before producing required output artifacts.
@@ -190,10 +190,14 @@
 
 ## Chain Mode Contracts
 - `CognitiveChain`:
-  - `T1` objective: produce explicit compact plan artifact and optional continuity handle.
-  - `T2` objective: produce contract-valid output from plan artifact.
-  - `T2` must not run without a valid plan artifact.
-  - Additional `T1`/`T2` units may be executed when workflow scope requires multi-step planning/execution.
+  - `PLAN_STEP` objective: produce explicit compact plan artifact and provider continuity handle (for example provider `thoughtSignature`) when available.
+  - `EXECUTE` objective: produce contract-valid output from plan artifact.
+  - `EXECUTE` must not run without a valid plan artifact.
+  - Additional `PLAN_STEP`/`EXECUTE` units may be executed when workflow scope requires multi-step planning/execution.
+  - Cognitive flows may stage multiple `PLAN_STEP` units before one or more `EXECUTE` units.
+  - Provider may return a new `thoughtSignature` on each response; Zelanthus tracks the latest value as `thinking_persistence_key`.
+  - Cognitive requests should pass forward the latest persisted `thinking_persistence_key` to the next provider call when capability supports it.
+  - `thinking_persistence_key` can rotate turn-to-turn and is treated as rolling continuity state, not a fixed per-run key.
 - `ConversationalChain`:
   - Every turn is persisted with explicit turn metadata and output artifacts.
   - Conversation context can inform behavior, but contract validity is still checked per turn.
@@ -204,15 +208,16 @@
   - Must be treated as opaque provider state.
 - Resume rules:
   - Same run window with valid handle: use handle plus persisted turn artifacts.
-  - Delayed resume or handle failure: regenerate plan turn or continue from explicit valid plan artifact.
+  - `CognitiveChain` delayed resume or handle failure: restart from first `PLAN_STEP` because provider-side thinking cache durability is not guaranteed.
+  - `ConversationalChain` delayed resume: continue from last successful persisted step.
   - Provider/model swap: continuity handle is treated as invalid and ignored.
 
 ## Budget and Routing Rules
 - Runtime tracks thought token usage and output token usage separately.
 - Chain mode router may promote a phase from single-turn to `CognitiveChain` when output starvation risk is detected.
 - Retry policy must preserve chain semantics:
-  - Prefer `T2` retry only when `T1` artifact is still valid.
-  - Restart at `T1` when `T2` failures indicate stale or insufficient planning state.
+  - Prefer `EXECUTE` retry only when upstream `PLAN_STEP` artifact is still valid.
+  - Restart at first `PLAN_STEP` when `EXECUTE` failures indicate stale or insufficient planning state.
 
 ## Layer Ownership
 - Application layer:
@@ -224,7 +229,7 @@
   - persists turn artifacts/checkpoints/provenance and supports deterministic resume.
 
 ## Non-Negotiables
-- No blind `T2` execution without explicit valid plan state.
+- No blind `EXECUTE` execution without explicit valid plan state.
 - No correctness dependency on hidden provider state.
 - All chain failures and retries must be reason-coded and artifacted.
 

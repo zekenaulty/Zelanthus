@@ -3,7 +3,7 @@
 ## Compiled Plan Metadata
 
 - Plan Scope: `Drafts/thin-clients-first-solution-structure`
-- Compiled At (UTC): `2026-02-21T06:02:38Z`
+- Compiled At (UTC): `2026-02-21T08:29:57Z`
 - Source Document Count: `27`
 - Projection File: `thin-clients-first-solution-structure.md`
 
@@ -69,7 +69,7 @@
 - Draft Plan 1 package exists and is linked for downstream implementation planning.
 - Draft step sequencing is explicit for:
   - Plan 1: Prompting + abstractions + Gemini baseline.
-  - Plan 2: CognitiveChain/ConversationalChain runner + local artifact/provenance persistence (minimum proof includes one `T1` -> `T2` pair, but runner is not capped at two turns).
+  - Plan 2: CognitiveChain/ConversationalChain runner + local artifact/provenance persistence (minimum proof includes one `PLAN_STEP` -> `EXECUTE` pair, but runner is not capped at one pair).
 - Thin-clients draft risk log exists and captures current high-risk uncertainties.
 
 ## Cross-Plan Dependencies
@@ -122,6 +122,7 @@
   - `Plans/Drafts/thin-clients-first-solution-structure/artifacts/initial-solution-shape.md`
   - `Plans/Drafts/thin-clients-first-solution-structure/risks/risk-log.md`
   - `Plans/Drafts/mvp-prompting-gemini-contract-baseline/plan.md`
+  - `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/plan.md`
 - Infrastructure/Config:
   - local MVP persistence only (path/file-backed baseline; no Postgres setup in this draft).
   - local persistence in this scope means workspace-local storage of:
@@ -169,13 +170,14 @@
 - [x] `0090-choose-mvp-harness-shape`
 - [x] `0100-draft-plan-1-prompting-and-gemini-contract-implementation`
 - [x] `0105-clarify-contract-proof-test-naming`
-- [ ] `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence`
+- [x] `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence`
 
 ## Notes
 - Long-term production persistence target is Postgres, but this draft keeps persistence local and minimal to avoid out-of-order setup.
 - Plan 2 runner design is chain-length-flexible:
-  - `CognitiveChain` can execute multiple planned turns/steps (not only two).
-  - `ConversationalChain` supports multi-turn progression using explicit persisted turn artifacts.
+  - `CognitiveChain` can stage multiple `PLAN_STEP` units, then execute one or more `EXECUTE` units, and can run additional `PLAN_STEP` -> `EXECUTE` cycles in the same chain.
+  - `CognitiveChain` resume policy restarts from chain start when continuation is interrupted because provider-side thinking state is not durable.
+  - `ConversationalChain` supports multi-turn progression using explicit persisted turn artifacts and can resume from last successful step.
 
 ---
 
@@ -272,9 +274,12 @@
 - Minimum slice to validate backbone doctrine before broad StoryEngine expansion:
   - `Zelanthus.Prompting` contract implementation (identity/version/render/checksum/provenance hooks),
   - `Zelanthus.Llm.Clients.Abstractions` + `Zelanthus.Llm.Clients.Gemini` with capability profile and normalized metadata,
-  - one minimal runner proving at least one `CognitiveChain` step pair (`T1` + `T2`) with persisted artifacts/provenance.
+  - one minimal runner proving at least one `CognitiveChain` step pair (`PLAN_STEP` + `EXECUTE`) with persisted artifacts/provenance.
 - Clarification:
-  - `T1` + `T2` is the minimum acceptance proof path, not a runner turn-limit.
+  - `PLAN_STEP` + `EXECUTE` is the minimum acceptance proof path, not a runner step-limit.
+  - `CognitiveChain` may stage multiple `PLAN_STEP` units before one or more `EXECUTE` units and may repeat `PLAN_STEP` -> `EXECUTE` cycles.
+  - `CognitiveChain` resume restarts from chain start to re-establish provider thinking continuity safely.
+  - `ConversationalChain` resumes from last successful persisted step.
   - Runner design must allow multi-turn/multi-step execution for both `CognitiveChain` and `ConversationalChain`.
 - This slice is the acceptance gate for promoting broad StoryEngine implementation scope.
 
@@ -560,11 +565,13 @@
   - frontend/chat feature development.
 
 ## Harness Requirement Contract (host-shape neutral)
-- Must execute a deterministic `CognitiveChain` style proof path (`T1` then `T2`) for at least one representative step.
-- `T1` -> `T2` is a minimum proof path, not a hard cap on total turns.
+- Must execute a deterministic `CognitiveChain` style proof path (`PLAN_STEP` then `EXECUTE`) for at least one representative step.
+- `PLAN_STEP` -> `EXECUTE` is a minimum proof path, not a hard cap on total chain steps.
 - Plan 2 runner design must support variable-length chains for:
-  - `CognitiveChain` (multi-step planning/execution with thought-aware checkpoints),
+  - `CognitiveChain` (multi-step planning/execution with thought-aware checkpoints and optional staged `PLAN_STEP` groups),
   - `ConversationalChain` (multi-turn chat-style flow with explicit turn artifacts).
+- `CognitiveChain` resume policy must restart from chain start when execution is interrupted and provider thinking cache durability is unknown.
+- `ConversationalChain` resume policy may continue from the last successful persisted step.
 - Must run from one repeatable command path (for example `dotnet test` or one explicit host command).
 - Must capture raw response snapshot reference plus normalized metadata.
 - Must persist provenance and validation/failure outcome artifacts locally.
@@ -709,8 +716,8 @@
 - Mitigation: Add architecture tests as an MVP gate in Plan 1 work.
 - Status: open
 
-## R-005 Two-Turn Lock-In Risk
-- Statement: Treating `T1` -> `T2` as a fixed runner design (instead of minimum proof path) can block required multi-step chain workflows.
+## R-005 Single-Pair Lock-In Risk
+- Statement: Treating `PLAN_STEP` -> `EXECUTE` as a fixed one-pair runner design (instead of minimum proof path) can block required multi-step chain workflows.
 - Impact: Early rework in Plan 2 runner orchestration and persistence shape.
 - Mitigation: Explicitly require chain-length-flexible runner contracts for both `CognitiveChain` and `ConversationalChain` in Plan 2 draft.
 - Status: open
@@ -739,7 +746,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 | 0090 | `0090-choose-mvp-harness-shape` | `completed` | `0080-lock-mvp-goals-and-first-plan-boundary` | Selected test-host baseline (`Tests/Zelanthus.WorkflowContractProofs.Tests`); API-host deferred by criteria |
 | 0100 | `0100-draft-plan-1-prompting-and-gemini-contract-implementation` | `completed` | `0090-choose-mvp-harness-shape` | Created `mvp-prompting-gemini-contract-baseline` draft plan package with explicit scope, DoD, and step map |
 | 0105 | `0105-clarify-contract-proof-test-naming` | `completed` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation` | Locked semantic naming policy for contract-proof test project and seed test names |
-| 0110 | `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence` | `pending` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation`, `0105-clarify-contract-proof-test-naming` | Produce implementation-ready Draft Plan 2 for chain-length-flexible Cognitive/Conversational runner behavior and workspace-local persistence |
+| 0110 | `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence` | `completed` | `0100-draft-plan-1-prompting-and-gemini-contract-implementation`, `0105-clarify-contract-proof-test-naming` | Created `mvp-chain-runner-local-persistence-baseline` draft package with dependency matrix, decisions, risk log, and acceptance evidence artifacts |
 
 ## Status Values
 - `pending`
@@ -1253,7 +1260,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ## Context
 - Plan 2 depends on Plan 1 contract outputs and should avoid premature production persistence setup.
-- Plan 2 must not hard-lock runner flow to two turns; `T1` -> `T2` is minimum proof only.
+- Plan 2 must not hard-lock runner flow to one pair; `PLAN_STEP` -> `EXECUTE` is minimum proof only.
 
 ## Git Branch
 - `main`
@@ -1262,30 +1269,51 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - `none`
 
 ## Commands Executed
-- `none`
+- `New-Item -ItemType Directory -Path Plans/Drafts/mvp-chain-runner-local-persistence-baseline`
+- `python Plans/compile-plan.py Plans/Drafts/mvp-chain-runner-local-persistence-baseline`
+- `python Plans/compile-plan.py Plans/Drafts/thin-clients-first-solution-structure`
+- `python Plans/compile-plan.py Plans/Brainstorms/backbone-doctrine-prompt-first-multi-provider`
+- `rg -n "PLAN_STEP|EXECUTE|single-pair" Plans -g "*.md"`
 
 ## Files Changed
-- `none`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/plan.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/index.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/decisions/0001-chain-runner-execution-model-v0.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/decisions/0002-local-persistence-contract-and-layout-v0.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/decisions/0003-project-reference-graph-and-boundary-enforcement-v0.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/decisions/0004-retry-resume-and-reason-code-policy-v0.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/risks/risk-log.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/artifacts/project-dependency-implementation-matrix.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/0040-define-local-persistence-artifact-and-checkpoint-layout/artifacts/local-persistence-layout.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/0060-define-retry-resume-and-reason-code-policy/artifacts/reason-code-and-retry-policy.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/0070-plan-project-reference-graph-and-architecture-tests/artifacts/architecture-test-assertion-matrix.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/0080-define-runner-proof-test-suite-and-evidence-artifacts/artifacts/runner-proof-test-seed.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/0080-define-runner-proof-test-suite-and-evidence-artifacts/artifacts/runner-proof-evidence-spec.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/artifacts/final-promotion-checklist.md`
+- `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/mvp-chain-runner-local-persistence-baseline.md`
+- `Plans/Drafts/thin-clients-first-solution-structure/plan.md`
+- `Plans/Drafts/thin-clients-first-solution-structure/decisions/0002-thin-clients-first-sequencing-v0.md`
+- `Plans/Drafts/thin-clients-first-solution-structure/decisions/0007-mvp-goals-and-first-plan-boundary-v0.md`
+- `Plans/Drafts/thin-clients-first-solution-structure/risks/risk-log.md`
+- `Plans/Brainstorms/backbone-doctrine-prompt-first-multi-provider/decisions/0002-chain-continuity-strategy-v0.md`
+- `Plans/Drafts/thin-clients-first-solution-structure/thin-clients-first-solution-structure.md`
+- `Plans/Brainstorms/backbone-doctrine-prompt-first-multi-provider/backbone-doctrine-prompt-first-multi-provider.md`
 
 ## Tests / Results
-- `not-run` -> pending draft step
+- `python Plans/compile-plan.py Plans/Drafts/mvp-chain-runner-local-persistence-baseline` -> `pass`
 
 ## Issues
 - none
 
 ## Decision
-- pending
+- Draft Plan 2 package created with explicit dependency implementation details, chain-mode flexibility contract, and local persistence boundaries.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define runner acceptance criteria for variable-length `CognitiveChain` and `ConversationalChain` flows.
-- Define local persistence boundaries:
-  - workspace-local file/path-backed storage for checkpoints/artifacts/provenance/failures,
-  - deterministic resume/replay from persisted artifacts,
-  - no external database/cache/queue/service storage in Plan 2.
-- Define migration constraints toward future Postgres.
+- Review Draft Plan 2 and decide whether further refinement is needed before promotion consideration.
 
 ---
 

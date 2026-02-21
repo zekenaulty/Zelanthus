@@ -35,6 +35,10 @@ _ReSharper*/
 [Rr]elease*/
 [Dd]ebug*/
 [Aa]rtifacts/
+!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/artifacts/
+!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/artifacts/**/*.md
+!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/*/artifacts/
+!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/*/artifacts/**/*.md
 [Ll]og/
 [Ll]ogs/
 [Ll]ogFiles/

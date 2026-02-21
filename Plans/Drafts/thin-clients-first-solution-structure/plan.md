@@ -26,7 +26,7 @@
 - Draft Plan 1 package exists and is linked for downstream implementation planning.
 - Draft step sequencing is explicit for:
   - Plan 1: Prompting + abstractions + Gemini baseline.
-  - Plan 2: CognitiveChain/ConversationalChain runner + local artifact/provenance persistence (minimum proof includes one `T1` -> `T2` pair, but runner is not capped at two turns).
+  - Plan 2: CognitiveChain/ConversationalChain runner + local artifact/provenance persistence (minimum proof includes one `PLAN_STEP` -> `EXECUTE` pair, but runner is not capped at one pair).
 - Thin-clients draft risk log exists and captures current high-risk uncertainties.
 
 ## Cross-Plan Dependencies
@@ -79,6 +79,7 @@
   - `Plans/Drafts/thin-clients-first-solution-structure/artifacts/initial-solution-shape.md`
   - `Plans/Drafts/thin-clients-first-solution-structure/risks/risk-log.md`
   - `Plans/Drafts/mvp-prompting-gemini-contract-baseline/plan.md`
+  - `Plans/Drafts/mvp-chain-runner-local-persistence-baseline/plan.md`
 - Infrastructure/Config:
   - local MVP persistence only (path/file-backed baseline; no Postgres setup in this draft).
   - local persistence in this scope means workspace-local storage of:
@@ -126,10 +127,11 @@
 - [x] `0090-choose-mvp-harness-shape`
 - [x] `0100-draft-plan-1-prompting-and-gemini-contract-implementation`
 - [x] `0105-clarify-contract-proof-test-naming`
-- [ ] `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence`
+- [x] `0110-draft-plan-2-cognitive-chain-runner-and-local-persistence`
 
 ## Notes
 - Long-term production persistence target is Postgres, but this draft keeps persistence local and minimal to avoid out-of-order setup.
 - Plan 2 runner design is chain-length-flexible:
-  - `CognitiveChain` can execute multiple planned turns/steps (not only two).
-  - `ConversationalChain` supports multi-turn progression using explicit persisted turn artifacts.
+  - `CognitiveChain` can stage multiple `PLAN_STEP` units, then execute one or more `EXECUTE` units, and can run additional `PLAN_STEP` -> `EXECUTE` cycles in the same chain.
+  - `CognitiveChain` resume policy restarts from chain start when continuation is interrupted because provider-side thinking state is not durable.
+  - `ConversationalChain` supports multi-turn progression using explicit persisted turn artifacts and can resume from last successful step.

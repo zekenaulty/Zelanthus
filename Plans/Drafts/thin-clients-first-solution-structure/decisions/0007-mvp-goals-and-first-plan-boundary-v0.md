@@ -34,11 +34,13 @@
   - frontend/chat feature development.
 
 ## Harness Requirement Contract (host-shape neutral)
-- Must execute a deterministic `CognitiveChain` style proof path (`T1` then `T2`) for at least one representative step.
-- `T1` -> `T2` is a minimum proof path, not a hard cap on total turns.
+- Must execute a deterministic `CognitiveChain` style proof path (`PLAN_STEP` then `EXECUTE`) for at least one representative step.
+- `PLAN_STEP` -> `EXECUTE` is a minimum proof path, not a hard cap on total chain steps.
 - Plan 2 runner design must support variable-length chains for:
-  - `CognitiveChain` (multi-step planning/execution with thought-aware checkpoints),
+  - `CognitiveChain` (multi-step planning/execution with thought-aware checkpoints and optional staged `PLAN_STEP` groups),
   - `ConversationalChain` (multi-turn chat-style flow with explicit turn artifacts).
+- `CognitiveChain` resume policy must restart from chain start when execution is interrupted and provider thinking cache durability is unknown.
+- `ConversationalChain` resume policy may continue from the last successful persisted step.
 - Must run from one repeatable command path (for example `dotnet test` or one explicit host command).
 - Must capture raw response snapshot reference plus normalized metadata.
 - Must persist provenance and validation/failure outcome artifacts locally.
