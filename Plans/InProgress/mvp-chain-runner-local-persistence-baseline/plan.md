@@ -405,16 +405,16 @@ artifacts/workflow-runs/<run-id>/
   - pause execution, document blocker state, and re-baseline through Draft revision if Plan 2 boundaries materially change.
 
 ## Status Tracker
-- [ ] `0010-lock-plan-2-scope-and-contract-dependencies`
-- [ ] `0020-define-chain-runner-domain-and-state-model`
-- [ ] `0025-define-minimal-workflow-abstraction-hooks`
-- [ ] `0030-define-application-orchestration-flow-and-chain-router`
-- [ ] `0040-define-local-persistence-artifact-and-checkpoint-layout`
-- [ ] `0050-define-infrastructure-mappers-and-store-contracts`
+- [x] `0010-lock-plan-2-scope-and-contract-dependencies`
+- [x] `0020-define-chain-runner-domain-and-state-model`
+- [x] `0025-define-minimal-workflow-abstraction-hooks`
+- [x] `0030-define-application-orchestration-flow-and-chain-router`
+- [x] `0040-define-local-persistence-artifact-and-checkpoint-layout`
+- [x] `0050-define-infrastructure-mappers-and-store-contracts`
 - [ ] `0060-define-retry-resume-and-reason-code-policy`
-- [ ] `0070-plan-project-reference-graph-and-architecture-tests`
+- [x] `0070-plan-project-reference-graph-and-architecture-tests`
 - [ ] `0080-define-runner-proof-test-suite-and-evidence-artifacts`
-- [ ] `0090-define-api-composition-boundaries-and-host-integration`
+- [x] `0090-define-api-composition-boundaries-and-host-integration`
 - [ ] `0100-finalize-plan-2-acceptance-gates-and-promotion-readiness`
 
 ## Notes

@@ -23,6 +23,9 @@
     <ProjectReference Include="..\..\Source\Zelanthus.Prompting\Zelanthus.Prompting.csproj" />
     <ProjectReference Include="..\..\Source\Zelanthus.Llm.Clients.Abstractions\Zelanthus.Llm.Clients.Abstractions.csproj" />
     <ProjectReference Include="..\..\Source\Zelanthus.Llm.Clients.Gemini\Zelanthus.Llm.Clients.Gemini.csproj" />
+    <ProjectReference Include="..\..\Source\Zelanthus.StoryEngine.Domain\Zelanthus.StoryEngine.Domain.csproj" />
+    <ProjectReference Include="..\..\Source\Zelanthus.StoryEngine.Application\Zelanthus.StoryEngine.Application.csproj" />
+    <ProjectReference Include="..\..\Source\Zelanthus.StoryEngine.Infrastructure\Zelanthus.StoryEngine.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

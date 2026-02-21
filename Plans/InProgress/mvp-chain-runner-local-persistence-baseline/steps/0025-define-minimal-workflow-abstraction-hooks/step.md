@@ -14,10 +14,16 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowKeyValidator.cs`
+- `Source/Zelanthus.StoryEngine.Domain/PromptReference.cs`
+- `Source/Zelanthus.StoryEngine.Domain/StepKind.cs`
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowKind.cs`
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowStepDefinition.cs`
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowDefinition.cs`
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/decisions/0005-minimal-workflow-abstraction-v0.md`
@@ -28,7 +34,8 @@
   - minimal workflow abstraction section is explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
 
 ## Acceptance Evidence
 - Workflow abstraction includes explicit `WorkflowDefinition`, `WorkflowStepDefinition`, and `WorkflowRunContext`.
@@ -48,13 +55,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: minimal workflow abstraction contracts are now implemented in `Zelanthus.StoryEngine.Domain` with deterministic key validation and required `prompt_ref`.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Apply workflow abstraction to application orchestration and chain router planning.
+- Execute step `0030-define-application-orchestration-flow-and-chain-router`.
 
 
 

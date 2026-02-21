@@ -13,6 +13,11 @@ public sealed class DependencyDirectionTests
         "Zelanthus.StoryEngine.Infrastructure",
     ];
 
+    private static readonly string[] ProviderReferences =
+    [
+        "Zelanthus.Llm.Clients.Gemini",
+    ];
+
     [Fact]
     public void Prompting_DoesNotReferenceApiStoryEngineOrProviderImplementationProjects()
     {
@@ -45,6 +50,47 @@ public sealed class DependencyDirectionTests
         AssertNoReferences(
             references,
             StoryEngineOrApiReferences.Concat(["Zelanthus.Prompting"]));
+    }
+
+    [Fact]
+    public void StoryEngineDomain_DoesNotReferenceInfrastructureProviderApiOrPromptingProjects()
+    {
+        var references = GetZelanthusReferences("Zelanthus.StoryEngine.Domain");
+
+        AssertNoReferences(
+            references,
+            StoryEngineOrApiReferences
+                .Where(reference => !string.Equals(reference, "Zelanthus.StoryEngine.Domain", StringComparison.Ordinal))
+                .Concat(
+                    [
+                        "Zelanthus.Prompting",
+                        "Zelanthus.Llm.Clients.Abstractions",
+                        "Zelanthus.Llm.Clients.Gemini",
+                    ]));
+    }
+
+    [Fact]
+    public void StoryEngineApplication_DoesNotReferenceInfrastructureProviderOrApiProjects()
+    {
+        var references = GetZelanthusReferences("Zelanthus.StoryEngine.Application");
+
+        AssertNoReferences(
+            references,
+            ProviderReferences.Concat(
+                [
+                    "Zelanthus.API",
+                    "Zelanthus.StoryEngine.Infrastructure",
+                ]));
+    }
+
+    [Fact]
+    public void StoryEngineInfrastructure_DoesNotReferenceApiOrProviderImplementationProjects()
+    {
+        var references = GetZelanthusReferences("Zelanthus.StoryEngine.Infrastructure");
+
+        AssertNoReferences(
+            references,
+            ProviderReferences.Concat(["Zelanthus.API"]));
     }
 
     [Fact]

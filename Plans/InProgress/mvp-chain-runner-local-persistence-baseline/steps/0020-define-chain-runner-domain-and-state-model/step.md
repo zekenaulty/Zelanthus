@@ -13,10 +13,16 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.StoryEngine.Domain/ChainMode.cs`
+- `Source/Zelanthus.StoryEngine.Domain/RunState.cs`
+- `Source/Zelanthus.StoryEngine.Domain/TurnState.cs`
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowRunCursor.cs`
+- `Source/Zelanthus.StoryEngine.Domain/RunStateTransitionRules.cs`
+- `Source/Zelanthus.StoryEngine.Domain/Class1.cs` (deleted)
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/decisions/0001-chain-runner-execution-model-v0.md`
@@ -27,7 +33,8 @@
   - runner execution contract and invariants are explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
 
 ## Acceptance Evidence
 - Domain contract includes explicit run identity, chain mode, turn metadata, and run state transitions.
@@ -46,13 +53,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: domain run/turn state model and transition validation contracts are implemented in `Zelanthus.StoryEngine.Domain`.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define application orchestration and chain routing flow on top of this state model.
+- Execute step `0025-define-minimal-workflow-abstraction-hooks`.
 
 
 

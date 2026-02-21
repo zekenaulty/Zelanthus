@@ -14,10 +14,25 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet new classlib -n Zelanthus.StoryEngine.Domain -f net10.0 -o "Source/Zelanthus.StoryEngine.Domain"`
+- `dotnet new classlib -n Zelanthus.StoryEngine.Application -f net10.0 -o "Source/Zelanthus.StoryEngine.Application"`
+- `dotnet new classlib -n Zelanthus.StoryEngine.Infrastructure -f net10.0 -o "Source/Zelanthus.StoryEngine.Infrastructure"`
+- `dotnet sln "Zelanthus.slnx" add "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj"`
+- `dotnet add "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" reference "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj"`
+- `dotnet add "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj" reference "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj"`
+- `dotnet add "Source/Zelanthus.API/Zelanthus.API.csproj" reference "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet add "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" reference "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj"`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Zelanthus.slnx`
+- `Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj`
+- `Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj`
+- `Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj`
+- `Source/Zelanthus.API/Zelanthus.API.csproj`
+- `Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj`
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/plan.md`
@@ -28,7 +43,9 @@
   - acceptance points and evidence mapping are explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (14 tests)
 
 ## Acceptance Evidence
 - Dependency matrix includes all Plan 2 project touchpoints and direction rules.
@@ -39,13 +56,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: Plan 2 dependency boundaries are now enforced in the live solution/project graph.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define runner domain/state contracts and turn model details.
+- Execute step `0020-define-chain-runner-domain-and-state-model`.
 
 
 

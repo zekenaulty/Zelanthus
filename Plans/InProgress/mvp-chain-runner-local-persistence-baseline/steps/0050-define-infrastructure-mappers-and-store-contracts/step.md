@@ -14,10 +14,15 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.StoryEngine.Infrastructure/LocalPersistenceReasonCodes.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/WorkflowRunStoreRecords.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/IWorkflowRunStore.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/LocalFileWorkflowRunStore.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/Class1.cs` (deleted)
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/decisions/0002-local-persistence-contract-and-layout-v0.md`
@@ -28,7 +33,8 @@
   - local persistence contract and mapping expectations are explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
 
 ## Acceptance Evidence
 - Store interfaces are explicit for:
@@ -45,13 +51,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: infrastructure store and mapper contracts are implemented with deterministic serialization and atomic temp-write replace behavior.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define retry/resume reason-code policy and persistence expectations.
+- Execute step `0060-define-retry-resume-and-reason-code-policy`.
 
 
 

@@ -13,10 +13,11 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet add "Source/Zelanthus.API/Zelanthus.API.csproj" reference "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet build "Zelanthus.slnx"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.API/Zelanthus.API.csproj`
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/plan.md`
@@ -25,7 +26,7 @@
   - API reference rules are explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
 
 ## Acceptance Evidence
 - API touchpoint scope is constrained to composition/integration boundaries.
@@ -36,13 +37,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: API remains composition-only and now wires StoryEngine and provider adapter dependencies without introducing endpoint breadth changes.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Finalize Plan 2 acceptance checklist and promotion readiness package.
+- Execute step `0060-define-retry-resume-and-reason-code-policy` and step `0080-define-runner-proof-test-suite-and-evidence-artifacts` before finalization.
 
 
 

@@ -14,10 +14,11 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.StoryEngine.Infrastructure/WorkflowRunPaths.cs`
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/decisions/0002-local-persistence-contract-and-layout-v0.md`
@@ -28,7 +29,8 @@
   - local persistence contract section is explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
 
 ## Acceptance Evidence
 - Layout includes explicit run-level, turn-level, checkpoint, and failure records.
@@ -50,13 +52,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: deterministic local persistence path layout is implemented for run/checkpoint/turn/failure records with `<turn-index>-<step-key>` enforcement.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define mapper/store contracts and deterministic mapping failure rules.
+- Execute step `0050-define-infrastructure-mappers-and-store-contracts`.
 
 
 
