@@ -13,10 +13,19 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.Prompting/IPromptRenderer.cs`
+- `Source/Zelanthus.Prompting/PlaceholderKeyValidator.cs`
+- `Source/Zelanthus.Prompting/PromptReasonCodes.cs`
+- `Source/Zelanthus.Prompting/PromptRenderResult.cs`
+- `Source/Zelanthus.Prompting/PromptRenderer.cs`
+- `Source/Zelanthus.Prompting/PromptTemplateDefinition.cs`
+- `Source/Zelanthus.Prompting/RenderFailure.cs`
+- `Source/Zelanthus.Prompting/RenderedPrompt.cs`
+- `Source/Zelanthus.Prompting/Class1.cs` (deleted)
 
 ## Outputs
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/plan.md`
@@ -33,7 +42,8 @@
   - Step description uses placeholder terminology for Prompting scope.
 
 ## Tests / Results
-- `not-run` -> pending draft step
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (4 tests)
 
 ## Acceptance Evidence
 - Required implementation tests (exact names):
@@ -64,12 +74,12 @@
 - none
 
 ## Decision
-- pending
+- accepted: Prompting contract baseline is implemented with deterministic render success/failure outcomes, placeholder validation rules, and SHA-256 checksum canonicalization.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Lock prompt identity/version/render/checksum and required-placeholder acceptance criteria for InProgress planning.
+- Implement and validate proof tests in `0060-implement-contract-proof-tests-and-local-artifact-persistence`.
 
 

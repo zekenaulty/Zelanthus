@@ -11,6 +11,7 @@
 
 ## Commits
 - `a334401ddc2675bb6c004229750000bbd8e6a31f`
+- `5e1e3a941954e24dece3f3a340f8cf12e2acc548`
 
 ## Commands Executed
 - `dotnet sln "Zelanthus.slnx" add "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj" "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj"`
@@ -26,9 +27,15 @@
 - `Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj`
 - `Tests/Zelanthus.Architecture.Tests/DependencyDirectionTests.cs`
 - `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
+- `Source/Zelanthus.Prompting/*`
+- `Source/Zelanthus.Llm.Clients.Abstractions/*`
+- `Source/Zelanthus.Llm.Clients.Gemini/*`
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/plan.md`
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/index.md`
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0010-scaffold-projects-and-references/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0020-define-prompting-contracts-and-rendering-rules/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0030-define-llm-client-abstractions-and-capability-profile/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0040-implement-gemini-adapter-normalization-path/step.md`
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0050-add-architecture-boundary-tests/step.md`
 
 ## Tests / Results
@@ -39,10 +46,10 @@
 - none
 
 ## Decision
-- in_progress: Plan 1 execution started; step `0010-scaffold-projects-and-references` and step `0050-add-architecture-boundary-tests` completed.
+- in_progress: Plan 1 execution started; steps `0010`, `0050`, `0020`, `0030`, and `0040` are complete with build and architecture gate passing.
 
 ## Completion
 - `in_progress`
 
 ## Next Actions
-- Execute `Plans/InProgress/mvp-prompting-gemini-contract-baseline` steps `0020`, `0030`, and `0040` to implement contracts and Gemini normalization.
+- Execute `Plans/InProgress/mvp-prompting-gemini-contract-baseline` steps `0060` and `0070` to add proof tests, evidence artifacts, and final acceptance validation.

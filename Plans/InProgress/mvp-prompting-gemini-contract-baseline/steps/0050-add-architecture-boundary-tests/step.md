@@ -10,7 +10,7 @@
 - `feature/thin-clients-first-solution-structure`
 
 ## Commits
-- `none`
+- `5e1e3a941954e24dece3f3a340f8cf12e2acc548`
 
 ## Commands Executed
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`

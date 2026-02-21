@@ -280,9 +280,9 @@
 
 ## Status Tracker
 - [x] `0010-scaffold-projects-and-references`
-- [ ] `0020-define-prompting-contracts-and-rendering-rules`
-- [ ] `0030-define-llm-client-abstractions-and-capability-profile`
-- [ ] `0040-implement-gemini-adapter-normalization-path`
+- [x] `0020-define-prompting-contracts-and-rendering-rules`
+- [x] `0030-define-llm-client-abstractions-and-capability-profile`
+- [x] `0040-implement-gemini-adapter-normalization-path`
 - [x] `0050-add-architecture-boundary-tests`
 - [ ] `0060-implement-contract-proof-tests-and-local-artifact-persistence`
 - [ ] `0070-validate-golden-path-and-reason-coded-failure-path`

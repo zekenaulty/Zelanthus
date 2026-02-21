@@ -13,10 +13,14 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.Llm.Clients.Gemini/GeminiLlmClient.cs`
+- `Source/Zelanthus.Llm.Clients.Gemini/GeminiProtocolContracts.cs`
+- `Source/Zelanthus.Llm.Clients.Gemini/IGeminiProtocolClient.cs`
+- `Source/Zelanthus.Llm.Clients.Gemini/Class1.cs` (deleted)
 
 ## Outputs
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/plan.md`
@@ -34,18 +38,19 @@
   - adapter proof tests run in default deterministic mode without requiring live-provider calls.
 
 ## Tests / Results
-- `not-run` -> pending draft step
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (4 tests)
 
 ## Issues
 - none
 
 ## Decision
-- pending
+- accepted: Gemini adapter baseline maps protocol results into normalized envelopes and reason-coded failures using `provider_protocol_error`.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Specify adapter acceptance tests for normalized metadata, `TokenAccounting`, and failure translation.
+- Implement contract-proof tests in `0060` for valid response mapping, protocol failure mapping, and unknown token accounting behavior.
 
 
