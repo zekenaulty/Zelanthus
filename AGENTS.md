@@ -21,6 +21,8 @@ Path casing and token conventions:
 - New projects must target `net10.0` unless the user explicitly approves a different target.
 - Do not introduce mixed target frameworks without an explicit planning decision.
 - If a package or tool requires a target framework change, stop and ask before applying it.
+- Test project names must be semantic and intent-rich (for example `Zelanthus.WorkflowContractProofs.Tests`).
+- Avoid low-semantic generic names like `MvpHarness`, `TempTests`, or `MiscTests`.
 
 Git and execution non-negotiables:
 - Planning work (`Plans/Brainstorms`, `Plans/Drafts`, doctrine/readme updates) defaults to `main`/trunk.
