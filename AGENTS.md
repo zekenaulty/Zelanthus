@@ -24,6 +24,16 @@ Path casing and token conventions:
 - Test project names must be semantic and intent-rich (for example `Zelanthus.WorkflowContractProofs.Tests`).
 - Avoid low-semantic generic names like `MvpHarness`, `TempTests`, or `MiscTests`.
 
+Source layout and namespace isolation:
+- Do not dump production `.cs` files in a project root.
+- Project-root `.cs` allowlist is only:
+  - `Program.cs` (host bootstrap when needed)
+  - `GlobalUsings.cs`
+- All other source files must live in semantic subfolders (for example `Contracts/`, `Models/`, `Policies/`, `Storage/`, `Workflows/`).
+- Namespaces must follow folder scope and semantic meaning (for example `Zelanthus.StoryEngine.Application.Contracts` for files under `Contracts/`).
+- If a file name needs scope tokens to stay understandable, split by folder and narrow namespace instead.
+- `ChainMode` ownership is `Zelanthus.Llm.Clients.Abstractions.Enums` only; domain workflow mode is represented by `WorkflowKind`.
+
 Git and execution non-negotiables:
 - Planning work (`Plans/Brainstorms`, `Plans/Drafts`, doctrine/readme updates) defaults to `main`/trunk.
 - Do not promote `Drafts -> InProgress` unless the user explicitly says to promote.

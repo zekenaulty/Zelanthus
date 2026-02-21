@@ -113,6 +113,54 @@ public sealed class DependencyDirectionTests
         Assert.True(hasAbstractionsReference);
     }
 
+    [Fact]
+    public void ChainModeEnum_IsOwnedByLlmClientAbstractionsOnly()
+    {
+        var abstractionsAssembly = Assembly.Load("Zelanthus.Llm.Clients.Abstractions");
+        var domainAssembly = Assembly.Load("Zelanthus.StoryEngine.Domain");
+
+        Assert.Contains(
+            abstractionsAssembly.GetTypes(),
+            type => type.IsEnum && string.Equals(type.Name, "ChainMode", StringComparison.Ordinal));
+        Assert.DoesNotContain(
+            domainAssembly.GetTypes(),
+            type => type.IsEnum && string.Equals(type.Name, "ChainMode", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void SourceProjects_DoNotKeepFeatureClassesInProjectRoot()
+    {
+        var repositoryRoot = GetRepositoryRoot();
+        var sourceRoot = Path.Combine(repositoryRoot, "Source");
+        var allowedRootFileNames = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "Program.cs",
+            "GlobalUsings.cs",
+        };
+
+        var projectDirectories = Directory
+            .GetFiles(sourceRoot, "*.csproj", SearchOption.AllDirectories)
+            .Select(Path.GetDirectoryName)
+            .OfType<string>()
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToArray();
+
+        foreach (var projectDirectory in projectDirectories)
+        {
+            var rootCsFiles = Directory
+                .GetFiles(projectDirectory, "*.cs", SearchOption.TopDirectoryOnly)
+                .Where(path => !allowedRootFileNames.Contains(Path.GetFileName(path)))
+                .Select(Path.GetFileName)
+                .OrderBy(name => name, StringComparer.Ordinal)
+                .ToArray();
+
+            Assert.True(
+                rootCsFiles.Length == 0,
+                $"Project '{Path.GetFileName(projectDirectory)}' has root-level .cs files that must be folderized: {string.Join(", ", rootCsFiles)}");
+        }
+    }
+
     private static HashSet<string> GetZelanthusReferences(string assemblyName)
     {
         var assembly = Assembly.Load(assemblyName);

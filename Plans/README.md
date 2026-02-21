@@ -381,10 +381,14 @@ Rules:
 - Keep domain logic in domain layers, not controllers or infrastructure glue.
 - Use clear separation of concerns across Domain, Application, Infrastructure, and API.
 - Avoid monolithic files/classes; split by responsibility.
+- Do not keep feature classes in project root folders.
+- Project-root `.cs` allowlist is only `Program.cs` and `GlobalUsings.cs`; all other source files must be folderized by concern.
+- Use semantic folders and matching namespaces (for example `Contracts/` -> `.Contracts`, `Workflows/` -> `.Workflows`, `Storage/` -> `.Storage`).
 - Use composition and explicit interfaces where they add boundary clarity.
 - Keep naming semantic and domain-aligned.
 - Keep test project names semantic and purpose-based (for example `Zelanthus.WorkflowContractProofs.Tests`).
 - Avoid generic test project names with weak intent (`MvpHarness`, `TempTests`, `MiscTests`).
+- `ChainMode` is owned by LLM client abstractions; workflow/domain mode is represented by `WorkflowKind`.
 - Enforce test coverage for core domain/application behavior.
 - Prefer containerized local dependency workflows for repeatable setup and integration testing.
 - Keep documentation and plan artifacts aligned with real code behavior.

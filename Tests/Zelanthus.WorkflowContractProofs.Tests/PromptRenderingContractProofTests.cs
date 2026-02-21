@@ -1,5 +1,3 @@
-using Zelanthus.Prompting;
-
 namespace Zelanthus.WorkflowContractProofs.Tests;
 
 public sealed class PromptRenderingContractProofTests

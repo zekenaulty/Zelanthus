@@ -1,7 +1,4 @@
 using System.Text.Json;
-using Zelanthus.StoryEngine.Application;
-using Zelanthus.StoryEngine.Domain;
-using Zelanthus.StoryEngine.Infrastructure;
 
 namespace Zelanthus.WorkflowContractProofs.Tests;
 
@@ -20,7 +17,7 @@ public sealed class ChainRunnerContractProofTests
             ]);
 
         var runId = Guid.NewGuid();
-        var runCursor = CreateRunCursor(runId, workflow, ChainMode.CognitiveChain);
+        var runCursor = CreateRunCursor(runId, workflow);
         var runPaths = CreateWorkflowRunPaths();
         var runStore = new LocalFileWorkflowRunStore(runPaths);
 
@@ -53,7 +50,7 @@ public sealed class ChainRunnerContractProofTests
                 CreateWorkflowStep("0040-execute-step", StepKind.Execute),
             ]);
 
-        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.CognitiveChain);
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
         var stepExecutor = new ArtifactPersistingStepExecutor(
             new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
             resultFactory: context => WorkflowStepExecutionResult.Succeeded($"tsig-{context.StepIndex + 1:0000}"));
@@ -76,7 +73,7 @@ public sealed class ChainRunnerContractProofTests
         var runCursor = CreateRunCursor(
             Guid.NewGuid(),
             workflow,
-            ChainMode.CognitiveChain,
+            WorkflowKind.CognitiveChain,
             latestThinkingPersistenceKey: "existing-thought-key");
 
         var stepExecutor = new ArtifactPersistingStepExecutor(
@@ -99,7 +96,7 @@ public sealed class ChainRunnerContractProofTests
             WorkflowKind.CognitiveChain,
             [CreateWorkflowStep("0010-plan-step", StepKind.PlanStep)]);
 
-        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.CognitiveChain);
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
         var stepExecutor = new ArtifactPersistingStepExecutor(
             new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
             resultFactory: _ => WorkflowStepExecutionResult.Succeeded(latestThinkingPersistenceKey: null));
@@ -127,7 +124,7 @@ public sealed class ChainRunnerContractProofTests
             Guid.NewGuid(),
             workflow.WorkflowKey,
             workflow.WorkflowVersion,
-            ChainMode.CognitiveChain,
+            WorkflowKind.CognitiveChain,
             RunState.Created,
             currentStepIndex: 2,
             lastSuccessStepIndex: 1,
@@ -163,7 +160,7 @@ public sealed class ChainRunnerContractProofTests
             Guid.NewGuid(),
             workflow.WorkflowKey,
             workflow.WorkflowVersion,
-            ChainMode.ConversationalChain,
+            WorkflowKind.ConversationalChain,
             RunState.Created,
             currentStepIndex: 1,
             lastSuccessStepIndex: 0,
@@ -203,7 +200,7 @@ public sealed class ChainRunnerContractProofTests
                 CreateWorkflowStep("0020-execute-step", StepKind.Execute),
             ]);
 
-        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.CognitiveChain);
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
         var stepExecutor = new ArtifactPersistingStepExecutor(
             new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
             resultFactory: context =>
@@ -258,7 +255,7 @@ public sealed class ChainRunnerContractProofTests
 
         var result = await runner.RunAsync(new WorkflowExecutionRequest(
             workflow,
-            CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.CognitiveChain)));
+            CreateRunCursor(Guid.NewGuid(), workflow)));
 
         Assert.False(result.IsSuccess);
         Assert.Equal(RunnerReasonCodes.MissingPromptReference, result.ReasonCode);
@@ -280,7 +277,7 @@ public sealed class ChainRunnerContractProofTests
 
         var result = await runner.RunAsync(new WorkflowExecutionRequest(
             workflow,
-            CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.ConversationalChain)));
+            CreateRunCursor(Guid.NewGuid(), workflow, workflowKind: WorkflowKind.ConversationalChain)));
 
         Assert.False(result.IsSuccess);
         Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
@@ -306,7 +303,7 @@ public sealed class ChainRunnerContractProofTests
 
         var result = await runner.RunAsync(new WorkflowExecutionRequest(
             workflow,
-            CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.CognitiveChain)));
+            CreateRunCursor(Guid.NewGuid(), workflow)));
 
         Assert.False(result.IsSuccess);
         Assert.False(result.IsRetryableFailure);
@@ -328,7 +325,7 @@ public sealed class ChainRunnerContractProofTests
 
         var result = await runner.RunAsync(new WorkflowExecutionRequest(
             workflow,
-            CreateRunCursor(Guid.NewGuid(), workflow, ChainMode.CognitiveChain)));
+            CreateRunCursor(Guid.NewGuid(), workflow)));
 
         Assert.False(result.IsSuccess);
         Assert.True(result.IsRetryableFailure);
@@ -389,7 +386,7 @@ public sealed class ChainRunnerContractProofTests
             Guid.NewGuid(),
             workflow.WorkflowKey,
             workflow.WorkflowVersion,
-            ChainMode.CognitiveChain,
+            WorkflowKind.CognitiveChain,
             RunState.Created,
             currentStepIndex: 0,
             lastSuccessStepIndex: -1,
@@ -459,14 +456,14 @@ public sealed class ChainRunnerContractProofTests
     private static WorkflowRunCursor CreateRunCursor(
         Guid runId,
         WorkflowDefinition workflowDefinition,
-        ChainMode chainMode,
+        WorkflowKind? workflowKind = null,
         string? latestThinkingPersistenceKey = null)
     {
         return new WorkflowRunCursor(
             runId,
             workflowDefinition.WorkflowKey,
             workflowDefinition.WorkflowVersion,
-            chainMode,
+            workflowKind ?? workflowDefinition.WorkflowKind,
             RunState.Created,
             currentStepIndex: 0,
             lastSuccessStepIndex: -1,
@@ -490,7 +487,7 @@ public sealed class ChainRunnerContractProofTests
                 runCursor.RunId,
                 runCursor.WorkflowKey,
                 runCursor.WorkflowVersion,
-                runCursor.ChainMode.ToString(),
+                runCursor.WorkflowKind.ToString(),
                 runCursor.RunState.ToString(),
                 runCursor.CurrentStepIndex,
                 runCursor.LastSuccessStepIndex,

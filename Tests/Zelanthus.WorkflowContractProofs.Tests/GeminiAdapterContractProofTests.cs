@@ -1,6 +1,3 @@
-using Zelanthus.Llm.Clients.Abstractions;
-using Zelanthus.Llm.Clients.Gemini;
-
 namespace Zelanthus.WorkflowContractProofs.Tests;
 
 public sealed class GeminiAdapterContractProofTests
@@ -120,7 +117,7 @@ public sealed class GeminiAdapterContractProofTests
                 RenderedText: "Render this prompt",
                 Checksum: "checksum",
                 RequiredPlaceholders: ["objective", "tone"]),
-            new Zelanthus.Llm.Clients.Abstractions.ExecutionContext(
+            new Zelanthus.Llm.Clients.Abstractions.Contracts.ExecutionContext(
                 ChainMode.CognitiveChain,
                 TurnIndex: 1,
                 WorkflowKey: "mvp.workflow",
