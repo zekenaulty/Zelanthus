@@ -4,6 +4,11 @@
 - Plan: `mvp-chain-runner-local-persistence-baseline`
 - Purpose: map acceptance points to required evidence before promotion to `InProgress`.
 
+## Execution Evidence Summary
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> passed (28 tests)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> passed (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> passed (35 tests)
+
 ## Acceptance Map
 | Acceptance Point | Required Evidence Type | Planned Location |
 |---|---|---|

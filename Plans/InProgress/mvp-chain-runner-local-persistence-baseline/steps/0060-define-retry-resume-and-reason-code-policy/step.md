@@ -14,10 +14,16 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Source/Zelanthus.StoryEngine.Application/RunnerReasonCodes.cs`
+- `Source/Zelanthus.StoryEngine.Application/WorkflowExecutionResult.cs`
+- `Source/Zelanthus.StoryEngine.Application/WorkflowRunner.cs`
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowStepDefinition.cs`
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/decisions/0004-retry-resume-and-reason-code-policy-v0.md`
@@ -28,7 +34,10 @@
   - Plan 2 reason-code baseline section is explicit.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (28 tests)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (35 tests)
 
 ## Acceptance Evidence
 - Baseline reason-code list is explicit and exact (snake_case).
@@ -51,13 +60,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: reason-code baseline is implemented in runner contracts, cognitive restart policy emits `cognitive_restart_required`, and deterministic failure mapping is validated by proof tests.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define architecture test assertions and project reference graph updates.
+- Execute step `0080-define-runner-proof-test-suite-and-evidence-artifacts`.
 
 
 

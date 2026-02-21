@@ -19,15 +19,21 @@ public sealed class WorkflowRunner : IWorkflowRunner
 
         var workflowDefinition = executionRequest.WorkflowDefinition;
         var runCursor = executionRequest.WorkflowRunCursor;
+        var policyReasonCode = default(string?);
 
         if (!IsChainModeAligned(workflowDefinition.WorkflowKind, runCursor.ChainMode))
         {
             runCursor.MarkTerminalFailure();
-            return WorkflowExecutionResult.TerminalFailure(RunnerReasonCodes.InvalidStateTransition, runCursor);
+            return WorkflowExecutionResult.TerminalFailure(
+                RunnerReasonCodes.InvalidStateTransition,
+                runCursor,
+                workflowDefinition.Steps.Select(step => step.StepKey).ToArray());
         }
 
         var effectiveSteps = workflowDefinition.Steps.ToList();
-        var stepIndex = ResolveStartStepIndex(runCursor);
+        var resumeStart = ResolveStartStepIndex(runCursor);
+        var stepIndex = resumeStart.StartStepIndex;
+        policyReasonCode = resumeStart.PolicyReasonCode;
 
         runCursor.TransitionRunState(RunState.Running);
 
@@ -37,7 +43,11 @@ public sealed class WorkflowRunner : IWorkflowRunner
             if (step.PromptReference is null)
             {
                 runCursor.MarkTerminalFailure();
-                return WorkflowExecutionResult.TerminalFailure(RunnerReasonCodes.MissingPromptReference, runCursor);
+                return WorkflowExecutionResult.TerminalFailure(
+                    RunnerReasonCodes.MissingPromptReference,
+                    runCursor,
+                    effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                    policyReasonCode);
             }
 
             var executionContext = new WorkflowStepExecutionContext(
@@ -52,11 +62,19 @@ public sealed class WorkflowRunner : IWorkflowRunner
                 if (stepResult.IsRetryableFailure)
                 {
                     runCursor.MarkStepRetryableFailure();
-                    return WorkflowExecutionResult.RetryableFailure(stepResult.ReasonCode!, runCursor);
+                    return WorkflowExecutionResult.RetryableFailure(
+                        stepResult.ReasonCode!,
+                        runCursor,
+                        effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                        policyReasonCode);
                 }
 
                 runCursor.MarkTerminalFailure();
-                return WorkflowExecutionResult.TerminalFailure(stepResult.ReasonCode!, runCursor);
+                return WorkflowExecutionResult.TerminalFailure(
+                    stepResult.ReasonCode!,
+                    runCursor,
+                    effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                    policyReasonCode);
             }
 
             if (stepResult.AppendedSteps.Count > 0)
@@ -69,7 +87,10 @@ public sealed class WorkflowRunner : IWorkflowRunner
         }
 
         runCursor.TransitionRunState(RunState.Succeeded);
-        return WorkflowExecutionResult.Succeeded(runCursor);
+        return WorkflowExecutionResult.Succeeded(
+            runCursor,
+            effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+            policyReasonCode);
     }
 
     private static bool IsChainModeAligned(WorkflowKind workflowKind, ChainMode chainMode)
@@ -82,14 +103,16 @@ public sealed class WorkflowRunner : IWorkflowRunner
         };
     }
 
-    private static int ResolveStartStepIndex(WorkflowRunCursor runCursor)
+    private static ResumeStart ResolveStartStepIndex(WorkflowRunCursor runCursor)
     {
         if (runCursor.ChainMode == ChainMode.CognitiveChain && runCursor.CurrentStepIndex > 0)
         {
             // Cognitive chains always restart from the first planning step on resume.
-            return 0;
+            return new ResumeStart(0, RunnerReasonCodes.CognitiveRestartRequired);
         }
 
-        return runCursor.CurrentStepIndex;
+        return new ResumeStart(runCursor.CurrentStepIndex);
     }
+
+    private readonly record struct ResumeStart(int StartStepIndex, string? PolicyReasonCode = null);
 }

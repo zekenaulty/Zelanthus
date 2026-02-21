@@ -24,6 +24,10 @@
 - `dotnet build "Zelanthus.slnx"`
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
 - `Zelanthus.slnx`
@@ -41,22 +45,31 @@
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0030-define-application-orchestration-flow-and-chain-router/step.md`
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0040-define-local-persistence-artifact-and-checkpoint-layout/step.md`
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0050-define-infrastructure-mappers-and-store-contracts/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0060-define-retry-resume-and-reason-code-policy/step.md`
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0070-plan-project-reference-graph-and-architecture-tests/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0080-define-runner-proof-test-suite-and-evidence-artifacts/step.md`
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0090-define-api-composition-boundaries-and-host-integration/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/validation/final-promotion-checklist.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/ChainRunnerContractProofTests.cs`
 
 ## Tests / Results
 - `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (14 tests)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (28 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (35 tests)
 
 ## Issues
 - none
 
 ## Decision
-- in_progress: Plan 2 execution has started with project scaffolding, runner baseline contracts, local persistence contracts, and architecture-boundary enforcement implemented.
+- accepted: Plan 2 execution is complete with runner contracts, local persistence contracts, architecture boundary gates, reason-code policies, proof-suite coverage, and finalized promotion checklist artifacts.
 
 ## Completion
-- `in_progress`
+- `completed`
 
 ## Next Actions
-- Execute remaining Plan 2 steps `0060`, `0080`, and `0100` to complete reason-code policy coverage, runner proof-suite expansion, and acceptance finalization.
+- Proceed to top-level step `0140-prepare-closeout-and-pr-handoff`.

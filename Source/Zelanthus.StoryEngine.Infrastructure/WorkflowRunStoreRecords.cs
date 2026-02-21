@@ -11,6 +11,7 @@ public sealed record WorkflowRunRecord(
     int NextTurnIndex,
     int NextCheckpointSequence,
     string? LatestThinkingPersistenceKey,
+    IReadOnlyList<string>? EffectiveStepKeys,
     DateTimeOffset UpdatedUtc);
 
 public sealed record WorkflowTurnRecord(

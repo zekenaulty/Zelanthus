@@ -411,11 +411,11 @@ artifacts/workflow-runs/<run-id>/
 - [x] `0030-define-application-orchestration-flow-and-chain-router`
 - [x] `0040-define-local-persistence-artifact-and-checkpoint-layout`
 - [x] `0050-define-infrastructure-mappers-and-store-contracts`
-- [ ] `0060-define-retry-resume-and-reason-code-policy`
+- [x] `0060-define-retry-resume-and-reason-code-policy`
 - [x] `0070-plan-project-reference-graph-and-architecture-tests`
-- [ ] `0080-define-runner-proof-test-suite-and-evidence-artifacts`
+- [x] `0080-define-runner-proof-test-suite-and-evidence-artifacts`
 - [x] `0090-define-api-composition-boundaries-and-host-integration`
-- [ ] `0100-finalize-plan-2-acceptance-gates-and-promotion-readiness`
+- [x] `0100-finalize-plan-2-acceptance-gates-and-promotion-readiness`
 
 ## Notes
 - Workspace baseline is `.NET 10` (`net10.0`) for all planned project additions.

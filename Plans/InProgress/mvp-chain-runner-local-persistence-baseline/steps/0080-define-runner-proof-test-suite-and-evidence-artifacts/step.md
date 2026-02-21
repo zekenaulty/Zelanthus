@@ -14,10 +14,19 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/ChainRunnerContractProofTests.cs`
+- `Source/Zelanthus.Prompting/PromptProvenanceRecord.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/ProvenanceArtifactRecord.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/PromptingProvenanceMapper.cs`
+- `Source/Zelanthus.StoryEngine.Infrastructure/WorkflowRunStoreRecords.cs`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
 
 ## Outputs
 - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0080-define-runner-proof-test-suite-and-evidence-artifacts/artifacts/runner-proof-test-seed.md`
@@ -28,7 +37,10 @@
   - acceptance points mapped to test/evidence requirements.
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (28 tests)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (35 tests)
 
 ## Acceptance Evidence
 - Proof test list covers:
@@ -63,13 +75,13 @@
 - none
 
 ## Decision
-- pending
+- accepted: runner proof suite now validates variable-length chain behavior, resume semantics, deterministic reason-code outcomes, artifact path rules, counter reservation behavior, and provenance superset mapping.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define API composition boundary integration rules and non-goals.
+- Execute step `0100-finalize-plan-2-acceptance-gates-and-promotion-readiness`.
 
 
 

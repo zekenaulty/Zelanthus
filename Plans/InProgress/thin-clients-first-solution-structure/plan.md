@@ -119,7 +119,7 @@
 
 ## Status Tracker
 - [x] `0120-execute-mvp-prompting-gemini-contract-baseline`
-- [ ] `0130-execute-mvp-chain-runner-local-persistence-baseline`
+- [x] `0130-execute-mvp-chain-runner-local-persistence-baseline`
 - [ ] `0140-prepare-closeout-and-pr-handoff`
 
 ## Notes

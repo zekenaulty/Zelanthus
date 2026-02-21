@@ -5,14 +5,14 @@ public sealed record WorkflowStepDefinition
     public WorkflowStepDefinition(
         string stepKey,
         StepKind stepKind,
-        PromptReference promptReference,
+        PromptReference? promptReference,
         string inputContractReference,
         string outputContractReference,
         string? routeHookKey = null)
     {
         StepKey = WorkflowKeyValidator.ValidateStepKey(stepKey);
         StepKind = stepKind;
-        PromptReference = promptReference ?? throw new ArgumentNullException(nameof(promptReference));
+        PromptReference = promptReference;
         InputContractReference = string.IsNullOrWhiteSpace(inputContractReference)
             ? throw new ArgumentException("Input contract reference is required.", nameof(inputContractReference))
             : inputContractReference;
@@ -26,7 +26,7 @@ public sealed record WorkflowStepDefinition
 
     public StepKind StepKind { get; }
 
-    public PromptReference PromptReference { get; }
+    public PromptReference? PromptReference { get; }
 
     public string InputContractReference { get; }
 
