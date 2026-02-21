@@ -279,7 +279,7 @@
   - Pause execution, document blocker state, and re-baseline through Draft revision if boundaries materially change.
 
 ## Status Tracker
-- [ ] `0010-scaffold-projects-and-references`
+- [x] `0010-scaffold-projects-and-references`
 - [ ] `0020-define-prompting-contracts-and-rendering-rules`
 - [ ] `0030-define-llm-client-abstractions-and-capability-profile`
 - [ ] `0040-implement-gemini-adapter-normalization-path`

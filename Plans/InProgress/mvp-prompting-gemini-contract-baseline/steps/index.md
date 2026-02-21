@@ -7,7 +7,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 ## Step Map
 | Order | Step Folder | Status | Depends On | Notes |
 |---|---|---|---|---|
-| 0010 | `0010-scaffold-projects-and-references` | `pending` | `none` | Create initial Source/Tests projects and wire solution references |
+| 0010 | `0010-scaffold-projects-and-references` | `completed` | `none` | Create initial Source/Tests projects and wire solution references |
 | 0020 | `0020-define-prompting-contracts-and-rendering-rules` | `pending` | `0010-scaffold-projects-and-references`, `0050-add-architecture-boundary-tests` | Define prompt identity/version/render/checksum and required-placeholder enforcement behavior |
 | 0030 | `0030-define-llm-client-abstractions-and-capability-profile` | `pending` | `0010-scaffold-projects-and-references`, `0050-add-architecture-boundary-tests` | Define execution envelope, normalized response, capabilities, and reason-coded errors |
 | 0040 | `0040-implement-gemini-adapter-normalization-path` | `pending` | `0030-define-llm-client-abstractions-and-capability-profile`, `0050-add-architecture-boundary-tests` | Map Gemini protocol to abstraction contracts and normalized metadata |

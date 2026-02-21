@@ -13,23 +13,30 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet sln "Zelanthus.slnx" add "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj" "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj"`
+- `dotnet add "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj" reference "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj"`
+- `dotnet add "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" reference "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet add "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" reference "Source/Zelanthus.API/Zelanthus.API.csproj" "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet build "Zelanthus.slnx"`
 
 ## Files Changed
-- `none`
+- `Zelanthus.slnx`
+- `Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj`
+- `Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
 
 ## Tests / Results
-- `not-run` -> pending draft step
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
 
 ## Issues
 - none
 
 ## Decision
-- pending
+- accepted: scaffolded project set is solution-wired and reference graph baseline is in place for architecture-gate implementation.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Finalize planned project list and reference rules against dependency-direction policy.
+- Execute `0050-add-architecture-boundary-tests` before contract implementation steps.
 
