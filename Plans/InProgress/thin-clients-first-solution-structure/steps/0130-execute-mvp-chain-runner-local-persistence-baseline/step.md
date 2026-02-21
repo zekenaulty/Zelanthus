@@ -11,6 +11,8 @@
 
 ## Commits
 - `952c43f705d35adf53fe53bcd7f6c645cfb6f367`
+- `d1a05f72f904cd5d2081272d3627ec0f3a105620`
+- `e32c94d7f5df2c8a13c420f1645f9f4f8d2e6683`
 
 ## Commands Executed
 - `dotnet new classlib -n Zelanthus.StoryEngine.Domain -f net10.0 -o "Source/Zelanthus.StoryEngine.Domain"`
