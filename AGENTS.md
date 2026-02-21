@@ -21,6 +21,8 @@ Path casing and token conventions:
 - New projects must target `net10.0` unless the user explicitly approves a different target.
 - Do not introduce mixed target frameworks without an explicit planning decision.
 - If a package or tool requires a target framework change, stop and ask before applying it.
+- For Entity Framework persistence, tracked entities must be `class` types with identity semantics (not `record` types).
+- Use `record` types for value-style contracts (DTOs, snapshots, value objects) where value equality is desired.
 - Test project names must be semantic and intent-rich (for example `Zelanthus.WorkflowContractProofs.Tests`).
 - Avoid low-semantic generic names like `MvpHarness`, `TempTests`, or `MiscTests`.
 
