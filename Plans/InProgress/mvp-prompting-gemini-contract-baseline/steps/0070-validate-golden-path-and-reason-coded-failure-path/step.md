@@ -13,17 +13,25 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/validation/final-acceptance-checklist.md`
+- `artifacts/workflow-contract-proofs/prompt-render-failure-missing-placeholder.json` (validated)
+- `artifacts/workflow-contract-proofs/prompt-render-success.json` (validated)
+- `artifacts/workflow-contract-proofs/prompt-render-checksum-stability.json` (validated)
+- `artifacts/workflow-contract-proofs/gemini-normalized-response.json` (validated)
+- `artifacts/workflow-contract-proofs/gemini-provider-protocol-error.json` (validated)
+- `artifacts/workflow-contract-proofs/gemini-token-accounting-unknown.json` (validated)
 
 ## Outputs
-- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/artifacts/final-acceptance-checklist.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/validation/final-acceptance-checklist.md`
   - Final checklist mapping tests and artifacts to Plan 1 DoD acceptance points.
 
 ## Tests / Results
-- `not-run` -> pending draft step
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (11 tests)
 
 ## Acceptance Evidence
 - Required implementation test pass evidence:
@@ -60,12 +68,12 @@
 - none
 
 ## Decision
-- pending
+- accepted: Plan 1 golden path and deterministic reason-coded failure path are validated with required proof tests and evidence artifacts.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Lock final evidence checklist required before Plan 1 promotion to InProgress.
+- Mark top-level thin-clients execution step `0120` complete and proceed to Plan 2 execution step `0130`.
 
 

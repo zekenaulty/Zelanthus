@@ -118,7 +118,7 @@
   - Pause execution, document blocker state in step notes, and re-baseline via Draft revision if execution scope changes materially.
 
 ## Status Tracker
-- [ ] `0120-execute-mvp-prompting-gemini-contract-baseline`
+- [x] `0120-execute-mvp-prompting-gemini-contract-baseline`
 - [ ] `0130-execute-mvp-chain-runner-local-persistence-baseline`
 - [ ] `0140-prepare-closeout-and-pr-handoff`
 

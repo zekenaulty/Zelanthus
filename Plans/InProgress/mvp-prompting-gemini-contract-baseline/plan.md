@@ -284,8 +284,8 @@
 - [x] `0030-define-llm-client-abstractions-and-capability-profile`
 - [x] `0040-implement-gemini-adapter-normalization-path`
 - [x] `0050-add-architecture-boundary-tests`
-- [ ] `0060-implement-contract-proof-tests-and-local-artifact-persistence`
-- [ ] `0070-validate-golden-path-and-reason-coded-failure-path`
+- [x] `0060-implement-contract-proof-tests-and-local-artifact-persistence`
+- [x] `0070-validate-golden-path-and-reason-coded-failure-path`
 
 ## Notes
 - Workspace baseline remains `.NET 10` (`net10.0`) for all new projects in this plan.

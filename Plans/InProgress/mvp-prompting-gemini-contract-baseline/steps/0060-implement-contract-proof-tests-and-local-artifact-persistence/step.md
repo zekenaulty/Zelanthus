@@ -13,10 +13,21 @@
 - `none`
 
 ## Commands Executed
-- `none`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/ContractProofArtifactWriter.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/GeminiAdapterContractProofTests.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/PromptRenderingContractProofTests.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/TestAssembly.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/UnitTest1.cs` (deleted)
+- `artifacts/workflow-contract-proofs/prompt-render-failure-missing-placeholder.json` (generated)
+- `artifacts/workflow-contract-proofs/prompt-render-success.json` (generated)
+- `artifacts/workflow-contract-proofs/prompt-render-checksum-stability.json` (generated)
+- `artifacts/workflow-contract-proofs/gemini-normalized-response.json` (generated)
+- `artifacts/workflow-contract-proofs/gemini-provider-protocol-error.json` (generated)
+- `artifacts/workflow-contract-proofs/gemini-token-accounting-unknown.json` (generated)
 
 ## Outputs
 - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0060-implement-contract-proof-tests-and-local-artifact-persistence/artifacts/initial-test-naming-seed.md`
@@ -25,7 +36,8 @@
   - Planned evidence artifact names and required fields for deterministic validation.
 
 ## Tests / Results
-- `not-run` -> pending draft step
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (11 tests)
 
 ## Acceptance Evidence
 - Required implementation test project:
@@ -62,12 +74,12 @@
 - none
 
 ## Decision
-- pending
+- accepted: contract-proof test harness now produces deterministic prompt and Gemini adapter evidence artifacts on default non-live test runs.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Define contract-proof test command paths, artifact locations, and evidence schema for golden/failure scenarios.
+- Execute `0070-validate-golden-path-and-reason-coded-failure-path` to lock final acceptance checklist and close Plan 1.
 
 
