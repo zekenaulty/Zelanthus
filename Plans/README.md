@@ -158,6 +158,42 @@ Archive flow:
 - InProgress-stage plan cancelled before completion -> `Archived/Drafts/<plan-folder>`
 - Completed plans aged out of recent view -> `Archived/CompletedHistory/<plan-folder>`
 
+## Git Branching and Commit Flow
+Planning workflow and coding workflow are intentionally different.
+
+Planning default:
+- Planning and doctrine work should happen primarily on `main`/trunk.
+- `Brainstorms` and `Drafts` updates should stay focused on planning artifacts and decision clarity.
+
+Execution default:
+- Any plan promoted to `Plans/InProgress/...` must execute on a feature branch.
+- One active InProgress plan should map to one active feature branch whenever possible.
+- Branch naming pattern:
+  - `feature/<plan-folder-name>`
+  - optional: `feature/<plan-folder-name>-<short-scope>`
+
+PR ownership:
+- Feature branches are prepared by implementation work and handed to the user for PR creation/merge.
+- Direct implementation commits to `main`/trunk are not allowed for InProgress work.
+
+Minor exception:
+- Small documentation-only updates can be done without a feature branch when they are not tied to in-flight implementation risk.
+- Any code, config, migration, or test-impacting change still requires a feature branch.
+
+In-flight dependency documentation rule:
+- If you discover a new dependency while working in a feature branch:
+  - create the smallest possible planning note/brainstorm update to capture the dependency,
+  - avoid broad planning detours,
+  - return to the feature execution flow immediately.
+- Goal: document needed context without losing implementation focus.
+
+Commit reliability standard:
+- Commits must be atomic and semantically meaningful.
+- Avoid noisy or generic commit messages.
+- Commits should not knowingly leave touched scope in a broken state.
+- If tests are not run, record that explicitly in the step note.
+- Step notes should reference the commits produced in that step.
+
 ## Completed vs CompletedHistory
 `Plans/Completed` is a recent work shelf.
 `Plans/Archived/CompletedHistory` is long-term history.
@@ -175,6 +211,7 @@ Every `plan.md` must include:
 - Definition of Done
 - Cross-plan dependencies (explicit references to required decisions/plans)
 - Interfaces and contracts introduced/changed
+- Git branch and PR tracking (for InProgress execution)
 - Touchpoint map (what will change, where)
 - Risks and mitigations
 - Validation/test approach
@@ -191,10 +228,17 @@ Interface/contract note pattern:
 - Introduced/changed/removed
 - Required invariants or compatibility notes
 
+Git tracking note pattern:
+- `Execution Branch: <branch-name-or-not-applicable>`
+- `Base Branch: <base-branch>`
+- `PR: <url-or-pending-or-not-applicable>`
+
 ## Required Content in steps/*/step.md
 Each step note must include:
 - Goal
 - Context
+- Git branch
+- Commits produced in step (if any)
 - Commands executed (exact commands)
 - Files changed
 - Tests/results
@@ -209,6 +253,7 @@ A plan cannot move to `InProgress` unless:
 - Scope and out-of-scope are explicit.
 - Cross-plan dependencies are explicit and valid.
 - Interfaces/contracts introduced or changed are explicit.
+- Branching and PR approach is explicit.
 - Touchpoints are concrete.
 - Risks and mitigations are captured.
 - Validation approach is defined.

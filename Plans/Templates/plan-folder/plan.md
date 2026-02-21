@@ -25,6 +25,11 @@
   - Change Type: `<introduced|changed|removed>`
   - Notes: <invariants, compatibility, migration notes>
 
+## Git Branch and PR Tracking
+- Execution Branch: `<branch-name-or-not-applicable>`
+- Base Branch: `<base-branch>`
+- PR: `<url-or-pending-or-not-applicable>`
+
 ## Touchpoint Map
 - Code:
   - `<path/to/file-or-folder>`

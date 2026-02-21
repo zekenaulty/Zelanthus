@@ -6,6 +6,12 @@
 ## Context
 - <Why this step is needed now>
 
+## Git Branch
+- `<branch-name>`
+
+## Commits
+- `<commit-hash> <summary>` or `none`
+
 ## Commands Executed
 - `<command>`
 
