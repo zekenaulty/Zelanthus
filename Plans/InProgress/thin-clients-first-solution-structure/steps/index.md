@@ -9,7 +9,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 |---|---|---|---|---|
 | 0120 | `0120-execute-mvp-prompting-gemini-contract-baseline` | `completed` | `none` | Execute Plan 1 on feature branch and maintain evidence/step notes in its InProgress folder |
 | 0130 | `0130-execute-mvp-chain-runner-local-persistence-baseline` | `completed` | `0120-execute-mvp-prompting-gemini-contract-baseline` | Execute Plan 2 after Plan 1 contracts are implemented and validated |
-| 0140 | `0140-prepare-closeout-and-pr-handoff` | `pending` | `0120-execute-mvp-prompting-gemini-contract-baseline`, `0130-execute-mvp-chain-runner-local-persistence-baseline` | Prepare Completed package, cleanup commit plan, and explicit PR-ready handoff for user merge |
+| 0140 | `0140-prepare-closeout-and-pr-handoff` | `completed` | `0120-execute-mvp-prompting-gemini-contract-baseline`, `0130-execute-mvp-chain-runner-local-persistence-baseline` | Prepare Completed package, cleanup commit plan, and explicit PR-ready handoff for user merge |
 
 ## Baseline Note
 - Legacy promoted baseline step folders (`0010`-`0110`) are retained for audit context only.

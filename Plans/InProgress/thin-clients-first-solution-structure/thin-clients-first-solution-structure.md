@@ -3,8 +3,8 @@
 ## Compiled Plan Metadata
 
 - Plan Scope: `InProgress/thin-clients-first-solution-structure`
-- Compiled At (UTC): `2026-02-21T12:09:40Z`
-- Source Document Count: `30`
+- Compiled At (UTC): `2026-02-21T19:43:52Z`
+- Source Document Count: `34`
 - Projection File: `thin-clients-first-solution-structure.md`
 
 ## Contents
@@ -20,25 +20,29 @@
 9. `decisions/0008-mvp-harness-shape-selection-v0.md`
 10. `decisions/0009-contract-proof-test-naming-policy-v0.md`
 11. `risks/risk-log.md`
-12. `steps/index.md`
-13. `steps/0010-map-solution-project-boundaries/step.md`
-14. `steps/0020-plan-thin-clients-package-first/step.md`
-15. `steps/0030-sequence-story-engine-dependencies/step.md`
-16. `steps/0040-lock-prompting-ownership-policy/step.md`
-17. `steps/0050-lock-infrastructure-prompt-shape-mapping/step.md`
-18. `steps/0060-refine-decision-layer-responsibility-clarity/step.md`
-19. `steps/0070-apply-external-review-refinements/step.md`
-20. `steps/0080-lock-mvp-goals-and-first-plan-boundary/step.md`
-21. `steps/0090-choose-mvp-harness-shape/step.md`
-22. `steps/0100-draft-plan-1-prompting-and-gemini-contract-implementation/step.md`
-23. `steps/0105-clarify-contract-proof-test-naming/step.md`
-24. `steps/0110-draft-plan-2-cognitive-chain-runner-and-local-persistence/step.md`
-25. `steps/0120-execute-mvp-prompting-gemini-contract-baseline/step.md`
-26. `steps/0130-execute-mvp-chain-runner-local-persistence-baseline/step.md`
-27. `steps/0140-prepare-closeout-and-pr-handoff/step.md`
-28. `steps/0090-choose-mvp-harness-shape/artifacts/harness-shape-evaluation-matrix.md`
-29. `artifacts/initial-solution-shape.md`
-30. `promotion.md`
+12. `validation/top-level-acceptance-evidence.md`
+13. `steps/index.md`
+14. `steps/0010-map-solution-project-boundaries/step.md`
+15. `steps/0020-plan-thin-clients-package-first/step.md`
+16. `steps/0030-sequence-story-engine-dependencies/step.md`
+17. `steps/0040-lock-prompting-ownership-policy/step.md`
+18. `steps/0050-lock-infrastructure-prompt-shape-mapping/step.md`
+19. `steps/0060-refine-decision-layer-responsibility-clarity/step.md`
+20. `steps/0070-apply-external-review-refinements/step.md`
+21. `steps/0080-lock-mvp-goals-and-first-plan-boundary/step.md`
+22. `steps/0090-choose-mvp-harness-shape/step.md`
+23. `steps/0100-draft-plan-1-prompting-and-gemini-contract-implementation/step.md`
+24. `steps/0105-clarify-contract-proof-test-naming/step.md`
+25. `steps/0110-draft-plan-2-cognitive-chain-runner-and-local-persistence/step.md`
+26. `steps/0120-execute-mvp-prompting-gemini-contract-baseline/step.md`
+27. `steps/0130-execute-mvp-chain-runner-local-persistence-baseline/step.md`
+28. `steps/0140-prepare-closeout-and-pr-handoff/step.md`
+29. `steps/0090-choose-mvp-harness-shape/artifacts/harness-shape-evaluation-matrix.md`
+30. `steps/0140-prepare-closeout-and-pr-handoff/validation/pr-ready-handoff-checklist.md`
+31. `steps/0140-prepare-closeout-and-pr-handoff/notes/closeout-traceability-prep.md`
+32. `steps/0140-prepare-closeout-and-pr-handoff/notes/completed-package-and-cleanup-sequence.md`
+33. `artifacts/initial-solution-shape.md`
+34. `promotion.md`
 
 ---
 
@@ -164,9 +168,9 @@
   - Pause execution, document blocker state in step notes, and re-baseline via Draft revision if execution scope changes materially.
 
 ## Status Tracker
-- [ ] `0120-execute-mvp-prompting-gemini-contract-baseline`
-- [ ] `0130-execute-mvp-chain-runner-local-persistence-baseline`
-- [ ] `0140-prepare-closeout-and-pr-handoff`
+- [x] `0120-execute-mvp-prompting-gemini-contract-baseline`
+- [x] `0130-execute-mvp-chain-runner-local-persistence-baseline`
+- [x] `0140-prepare-closeout-and-pr-handoff`
 
 ## Notes
 - This InProgress folder is execution-authoritative for the thin-clients top-level coordination plan.
@@ -718,7 +722,34 @@
 
 ---
 
-## Source 12: `steps/index.md`
+## Source 12: `validation/top-level-acceptance-evidence.md`
+
+# Top-Level Acceptance Evidence
+
+## Summary
+- Top-level thin-clients execution coordination plan reached execution-complete status for steps `0120`, `0130`, and `0140`.
+- Plan 1 and Plan 2 validation evidence has been captured and linked for PR handoff.
+
+## Evidence Links
+- Plan 1 final acceptance checklist:
+  - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/validation/final-acceptance-checklist.md`
+- Plan 2 final promotion checklist:
+  - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/validation/final-promotion-checklist.md`
+- Plan 2 acceptance matrix:
+  - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
+- Top-level closeout traceability prep:
+  - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/closeout-traceability-prep.md`
+- Top-level PR-ready checklist:
+  - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/validation/pr-ready-handoff-checklist.md`
+
+## Branch and Review Context
+- Execution branch: `feature/thin-clients-first-solution-structure`
+- Base branch: `main`
+- PR ownership: user-managed manual PR flow
+
+---
+
+## Source 13: `steps/index.md`
 
 # Steps Index
 
@@ -729,9 +760,9 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 ## Step Map
 | Order | Step Folder | Status | Depends On | Notes |
 |---|---|---|---|---|
-| 0120 | `0120-execute-mvp-prompting-gemini-contract-baseline` | `pending` | `none` | Execute Plan 1 on feature branch and maintain evidence/step notes in its InProgress folder |
-| 0130 | `0130-execute-mvp-chain-runner-local-persistence-baseline` | `pending` | `0120-execute-mvp-prompting-gemini-contract-baseline` | Execute Plan 2 after Plan 1 contracts are implemented and validated |
-| 0140 | `0140-prepare-closeout-and-pr-handoff` | `pending` | `0120-execute-mvp-prompting-gemini-contract-baseline`, `0130-execute-mvp-chain-runner-local-persistence-baseline` | Prepare Completed package, cleanup commit plan, and explicit PR-ready handoff for user merge |
+| 0120 | `0120-execute-mvp-prompting-gemini-contract-baseline` | `completed` | `none` | Execute Plan 1 on feature branch and maintain evidence/step notes in its InProgress folder |
+| 0130 | `0130-execute-mvp-chain-runner-local-persistence-baseline` | `completed` | `0120-execute-mvp-prompting-gemini-contract-baseline` | Execute Plan 2 after Plan 1 contracts are implemented and validated |
+| 0140 | `0140-prepare-closeout-and-pr-handoff` | `completed` | `0120-execute-mvp-prompting-gemini-contract-baseline`, `0130-execute-mvp-chain-runner-local-persistence-baseline` | Prepare Completed package, cleanup commit plan, and explicit PR-ready handoff for user merge |
 
 ## Baseline Note
 - Legacy promoted baseline step folders (`0010`-`0110`) are retained for audit context only.
@@ -745,7 +776,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 13: `steps/0010-map-solution-project-boundaries/step.md`
+## Source 14: `steps/0010-map-solution-project-boundaries/step.md`
 
 # Step: 0010-map-solution-project-boundaries
 
@@ -782,7 +813,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 14: `steps/0020-plan-thin-clients-package-first/step.md`
+## Source 15: `steps/0020-plan-thin-clients-package-first/step.md`
 
 # Step: 0020-plan-thin-clients-package-first
 
@@ -817,7 +848,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 15: `steps/0030-sequence-story-engine-dependencies/step.md`
+## Source 16: `steps/0030-sequence-story-engine-dependencies/step.md`
 
 # Step: 0030-sequence-story-engine-dependencies
 
@@ -852,7 +883,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 16: `steps/0040-lock-prompting-ownership-policy/step.md`
+## Source 17: `steps/0040-lock-prompting-ownership-policy/step.md`
 
 # Step: 0040-lock-prompting-ownership-policy
 
@@ -892,7 +923,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 17: `steps/0050-lock-infrastructure-prompt-shape-mapping/step.md`
+## Source 18: `steps/0050-lock-infrastructure-prompt-shape-mapping/step.md`
 
 # Step: 0050-lock-infrastructure-prompt-shape-mapping
 
@@ -934,7 +965,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 18: `steps/0060-refine-decision-layer-responsibility-clarity/step.md`
+## Source 19: `steps/0060-refine-decision-layer-responsibility-clarity/step.md`
 
 # Step: 0060-refine-decision-layer-responsibility-clarity
 
@@ -982,7 +1013,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 19: `steps/0070-apply-external-review-refinements/step.md`
+## Source 20: `steps/0070-apply-external-review-refinements/step.md`
 
 # Step: 0070-apply-external-review-refinements
 
@@ -1043,7 +1074,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 20: `steps/0080-lock-mvp-goals-and-first-plan-boundary/step.md`
+## Source 21: `steps/0080-lock-mvp-goals-and-first-plan-boundary/step.md`
 
 # Step: 0080-lock-mvp-goals-and-first-plan-boundary
 
@@ -1088,7 +1119,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 21: `steps/0090-choose-mvp-harness-shape/step.md`
+## Source 22: `steps/0090-choose-mvp-harness-shape/step.md`
 
 # Step: 0090-choose-mvp-harness-shape
 
@@ -1134,7 +1165,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 22: `steps/0100-draft-plan-1-prompting-and-gemini-contract-implementation/step.md`
+## Source 23: `steps/0100-draft-plan-1-prompting-and-gemini-contract-implementation/step.md`
 
 # Step: 0100-draft-plan-1-prompting-and-gemini-contract-implementation
 
@@ -1187,7 +1218,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 23: `steps/0105-clarify-contract-proof-test-naming/step.md`
+## Source 24: `steps/0105-clarify-contract-proof-test-naming/step.md`
 
 # Step: 0105-clarify-contract-proof-test-naming
 
@@ -1240,7 +1271,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 24: `steps/0110-draft-plan-2-cognitive-chain-runner-and-local-persistence/step.md`
+## Source 25: `steps/0110-draft-plan-2-cognitive-chain-runner-and-local-persistence/step.md`
 
 # Step: 0110-draft-plan-2-cognitive-chain-runner-and-local-persistence
 
@@ -1306,7 +1337,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 25: `steps/0120-execute-mvp-prompting-gemini-contract-baseline/step.md`
+## Source 26: `steps/0120-execute-mvp-prompting-gemini-contract-baseline/step.md`
 
 # Step: 0120-execute-mvp-prompting-gemini-contract-baseline
 
@@ -1320,32 +1351,66 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - `feature/thin-clients-first-solution-structure`
 
 ## Commits
-- `none`
+- `a334401ddc2675bb6c004229750000bbd8e6a31f`
+- `5e1e3a941954e24dece3f3a340f8cf12e2acc548`
+- `37a32635a968954bdf2d775977e940ee766278f0`
+- `f8454a38ae534c78691921c81d0f30fd4ae94ab7`
 
 ## Commands Executed
-- `none`
+- `dotnet sln "Zelanthus.slnx" add "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj" "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj"`
+- `dotnet add "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj" reference "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj"`
+- `dotnet add "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" reference "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet add "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" reference "Source/Zelanthus.API/Zelanthus.API.csproj" "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Zelanthus.slnx`
+- `Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj`
+- `Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj`
+- `Tests/Zelanthus.Architecture.Tests/DependencyDirectionTests.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/ContractProofArtifactWriter.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/GeminiAdapterContractProofTests.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/PromptRenderingContractProofTests.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/TestAssembly.cs`
+- `Source/Zelanthus.Prompting/*`
+- `Source/Zelanthus.Llm.Clients.Abstractions/*`
+- `Source/Zelanthus.Llm.Clients.Gemini/*`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/plan.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/index.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0010-scaffold-projects-and-references/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0020-define-prompting-contracts-and-rendering-rules/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0030-define-llm-client-abstractions-and-capability-profile/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0040-implement-gemini-adapter-normalization-path/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0050-add-architecture-boundary-tests/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0060-implement-contract-proof-tests-and-local-artifact-persistence/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/step.md`
+- `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/validation/final-acceptance-checklist.md`
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (4 tests)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (11 tests)
 
 ## Issues
 - none
 
 ## Decision
-- pending
+- accepted: Plan 1 execution is complete with all step gates, proof tests, and acceptance evidence validated.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Begin implementation work in `Plans/InProgress/mvp-prompting-gemini-contract-baseline` step `0010-scaffold-projects-and-references`.
+- Execute `Plans/InProgress/mvp-chain-runner-local-persistence-baseline` step sequence under top-level step `0130`.
 
 ---
 
-## Source 26: `steps/0130-execute-mvp-chain-runner-local-persistence-baseline/step.md`
+## Source 27: `steps/0130-execute-mvp-chain-runner-local-persistence-baseline/step.md`
 
 # Step: 0130-execute-mvp-chain-runner-local-persistence-baseline
 
@@ -1359,32 +1424,75 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - `feature/thin-clients-first-solution-structure`
 
 ## Commits
-- `none`
+- `952c43f705d35adf53fe53bcd7f6c645cfb6f367`
+- `d1a05f72f904cd5d2081272d3627ec0f3a105620`
+- `e32c94d7f5df2c8a13c420f1645f9f4f8d2e6683`
 
 ## Commands Executed
-- `none`
+- `dotnet new classlib -n Zelanthus.StoryEngine.Domain -f net10.0 -o "Source/Zelanthus.StoryEngine.Domain"`
+- `dotnet new classlib -n Zelanthus.StoryEngine.Application -f net10.0 -o "Source/Zelanthus.StoryEngine.Application"`
+- `dotnet new classlib -n Zelanthus.StoryEngine.Infrastructure -f net10.0 -o "Source/Zelanthus.StoryEngine.Infrastructure"`
+- `dotnet sln "Zelanthus.slnx" add "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj"`
+- `dotnet add "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" reference "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj"`
+- `dotnet add "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj" reference "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" "Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj"`
+- `dotnet add "Source/Zelanthus.API/Zelanthus.API.csproj" reference "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj" "Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj"`
+- `dotnet add "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" reference "Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" "Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" "Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj"`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
+- `dotnet build "Zelanthus.slnx"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 
 ## Files Changed
-- `none`
+- `Zelanthus.slnx`
+- `Source/Zelanthus.API/Zelanthus.API.csproj`
+- `Source/Zelanthus.StoryEngine.Domain/*`
+- `Source/Zelanthus.StoryEngine.Application/*`
+- `Source/Zelanthus.StoryEngine.Infrastructure/*`
+- `Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj`
+- `Tests/Zelanthus.Architecture.Tests/DependencyDirectionTests.cs`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/plan.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/index.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0010-lock-plan-2-scope-and-contract-dependencies/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0020-define-chain-runner-domain-and-state-model/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0025-define-minimal-workflow-abstraction-hooks/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0030-define-application-orchestration-flow-and-chain-router/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0040-define-local-persistence-artifact-and-checkpoint-layout/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0050-define-infrastructure-mappers-and-store-contracts/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0060-define-retry-resume-and-reason-code-policy/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0070-plan-project-reference-graph-and-architecture-tests/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0080-define-runner-proof-test-suite-and-evidence-artifacts/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0090-define-api-composition-boundaries-and-host-integration/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/step.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/validation/final-promotion-checklist.md`
+- `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/ChainRunnerContractProofTests.cs`
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
+- `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"` -> `passed` (7 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (14 tests)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (28 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (35 tests)
 
 ## Issues
 - none
 
 ## Decision
-- pending
+- accepted: Plan 2 execution is complete with runner contracts, local persistence contracts, architecture boundary gates, reason-code policies, proof-suite coverage, and finalized promotion checklist artifacts.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Begin implementation work in `Plans/InProgress/mvp-chain-runner-local-persistence-baseline` after Plan 1 completion evidence is present.
+- Proceed to top-level step `0140-prepare-closeout-and-pr-handoff`.
 
 ---
 
-## Source 27: `steps/0140-prepare-closeout-and-pr-handoff/step.md`
+## Source 28: `steps/0140-prepare-closeout-and-pr-handoff/step.md`
 
 # Step: 0140-prepare-closeout-and-pr-handoff
 
@@ -1398,32 +1506,48 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - `feature/thin-clients-first-solution-structure`
 
 ## Commits
-- `none`
+- `a334401ddc2675bb6c004229750000bbd8e6a31f`
+- `5e1e3a941954e24dece3f3a340f8cf12e2acc548`
+- `37a32635cc871a343af589e8f6af21b9ab56934a`
+- `f8454a34cea9b3e00e18fae294a06294ee1cedeb`
+- `11ae188c0d76e0e6b6f7d5677cad120d57388013`
+- `952c43f8937ac0b96a2277d52afc3b1e1af3a38f`
+- `d1a05f7c732512a01f39326adf2869af66271198`
+- `e32c94daa65943bf2d9cbfdb787ef113708b334d`
+- `e97278a565b66adf81c32fc58e0509f2218f5902`
 
 ## Commands Executed
-- `none`
+- `git merge-base main HEAD`
+- `git log --reverse --pretty=format:"%H|%s" main..HEAD`
+- `git log --reverse --pretty=format:"===%H|%s" --name-only main..HEAD`
 
 ## Files Changed
-- `none`
+- `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/step.md`
+- `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/closeout-traceability-prep.md`
+- `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/validation/pr-ready-handoff-checklist.md`
+- `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/completed-package-and-cleanup-sequence.md`
+- `Plans/InProgress/thin-clients-first-solution-structure/validation/top-level-acceptance-evidence.md`
+- `Plans/InProgress/thin-clients-first-solution-structure/steps/index.md`
+- `Plans/InProgress/thin-clients-first-solution-structure/plan.md`
 
 ## Tests / Results
-- `not-run` -> pending execution
+- `not-run` -> docs/planning-only closeout preparation step
 
 ## Issues
 - none
 
 ## Decision
-- pending
+- accepted: closeout traceability, PR-ready checklist, and closure sequencing are prepared and execution evidence is fully mapped.
 
 ## Completion
-- `pending`
+- `completed`
 
 ## Next Actions
-- Compile closeout traceability and confirm PR handoff checklist before user creates PR.
+- Signal PR-ready handoff to user with closure prep artifacts and wait for user-owned PR creation/merge.
 
 ---
 
-## Source 28: `steps/0090-choose-mvp-harness-shape/artifacts/harness-shape-evaluation-matrix.md`
+## Source 29: `steps/0090-choose-mvp-harness-shape/artifacts/harness-shape-evaluation-matrix.md`
 
 # Harness Shape Evaluation Matrix
 
@@ -1450,7 +1574,132 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 29: `artifacts/initial-solution-shape.md`
+## Source 30: `steps/0140-prepare-closeout-and-pr-handoff/validation/pr-ready-handoff-checklist.md`
+
+# PR-Ready Handoff Checklist
+
+## Pre-PR Readiness (Must Be True Before User PR Creation)
+- [x] Plan 1 execution complete and evidence captured.
+- [x] Plan 2 execution complete and evidence captured.
+- [x] Top-level execution coordination steps `0120` and `0130` marked `completed`.
+- [x] Closeout traceability prep artifact created:
+  - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/closeout-traceability-prep.md`
+- [x] Completion and cleanup sequence documented:
+  - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/completed-package-and-cleanup-sequence.md`
+- [x] Branch state clean and reviewable (`feature/thin-clients-first-solution-structure`).
+- [x] PR ownership remains user-owned manual flow (`agent prepares, user opens/merges PR`).
+
+## Closure Actions Planned (Executed As Separate Closure Commits)
+- [ ] Commit A: create `Plans/Completed/<plan-slug>/` package(s) with `draft-baseline/`, `implementation/`, `closeout/`.
+- [ ] Commit B: cleanup active stage folders (`Plans/Drafts/<plan-slug>/`, `Plans/InProgress/<plan-slug>/`) per `Plans/README.md`.
+- [ ] Populate merge, completed-package, and cleanup SHAs in closure traceability docs.
+
+## Owner Notes
+- User creates and merges the PR manually.
+- Agent should run closure transition commits only when explicitly requested.
+
+---
+
+## Source 31: `steps/0140-prepare-closeout-and-pr-handoff/notes/closeout-traceability-prep.md`
+
+# Closeout Traceability Prep
+
+## Intent
+- Capture the execution-to-evidence chain needed for final `InProgress -> Completed` closure.
+- Prepare deterministic SHA mapping and PR handoff context without mutating stage folders yet.
+
+## Baseline and Branch References
+- Source draft path: `Plans/Drafts/thin-clients-first-solution-structure`
+- Source draft commit SHA (frozen baseline): `cc49173737d3b767d9758f3e3706316bd5d93f05`
+- Promotion commit SHA (`Drafts -> InProgress`): `e38ed07d2c51bd640499b13131c9d8e96abbedab`
+- Feature branch base commit SHA: `e38ed07d2c51bd640499b13131c9d8e96abbedab`
+- Active branch: `feature/thin-clients-first-solution-structure`
+
+## Execution Commit Set (`main..HEAD`)
+- `17a7dfae74477ffa2c2e5dddd4003989bf02525b` -> planning refinement gate for Plan 2 persistence/name consistency.
+- `a334401ddc2675bb6c004229750000bbd8e6a31f` -> Plan 1 scaffolding and baseline references.
+- `5e1e3a941954e24dece3f3a340f8cf12e2acc548` -> Plan 1 architecture boundary tests.
+- `37a32635cc871a343af589e8f6af21b9ab56934a` -> Plan 1 prompting/abstractions/gemini contracts.
+- `f8454a34cea9b3e00e18fae294a06294ee1cedeb` -> Plan 1 contract proof tests and acceptance validation.
+- `11ae188c0d76e0e6b6f7d5677cad120d57388013` -> Plan 1 step SHA/evidence documentation update.
+- `952c43f8937ac0b96a2277d52afc3b1e1af3a38f` -> Plan 2 StoryEngine scaffolding and boundary gates.
+- `d1a05f7c732512a01f39326adf2869af66271198` -> Plan 2 initial step SHA/evidence documentation update.
+- `e32c94daa65943bf2d9cbfdb787ef113708b334d` -> Plan 2 reason policy/proof suite implementation.
+- `e97278a565b66adf81c32fc58e0509f2218f5902` -> Plan 2 final step SHA/evidence documentation update.
+
+## Traceability Map
+- Top-level step `0120-execute-mvp-prompting-gemini-contract-baseline`
+  - Execution evidence:
+    - `Plans/InProgress/mvp-prompting-gemini-contract-baseline/steps/0070-validate-golden-path-and-reason-coded-failure-path/validation/final-acceptance-checklist.md`
+    - `Plans/InProgress/thin-clients-first-solution-structure/steps/0120-execute-mvp-prompting-gemini-contract-baseline/step.md`
+- Top-level step `0130-execute-mvp-chain-runner-local-persistence-baseline`
+  - Execution evidence:
+    - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/steps/0100-finalize-plan-2-acceptance-gates-and-promotion-readiness/validation/final-promotion-checklist.md`
+    - `Plans/InProgress/mvp-chain-runner-local-persistence-baseline/validation/plan-2-acceptance-evidence-matrix.md`
+    - `Plans/InProgress/thin-clients-first-solution-structure/steps/0130-execute-mvp-chain-runner-local-persistence-baseline/step.md`
+- Top-level step `0140-prepare-closeout-and-pr-handoff`
+  - Closeout prep artifacts:
+    - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/closeout-traceability-prep.md`
+    - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/validation/pr-ready-handoff-checklist.md`
+    - `Plans/InProgress/thin-clients-first-solution-structure/steps/0140-prepare-closeout-and-pr-handoff/notes/completed-package-and-cleanup-sequence.md`
+
+## Required Closure SHA Fields (Prepared)
+- Merge commit SHA (`feature -> main`): `pending-user-pr-merge`
+- Completed-package commit SHA: `pending-completed-package-commit`
+- Cleanup commit SHA: `pending-cleanup-commit`
+
+## Completion Packaging Targets (Prepared)
+- `Plans/Completed/thin-clients-first-solution-structure/`
+- `Plans/Completed/mvp-prompting-gemini-contract-baseline/`
+- `Plans/Completed/mvp-chain-runner-local-persistence-baseline/`
+
+## Notes
+- This artifact is preparation evidence for PR-ready handoff.
+- Final closure SHAs are populated when `Completed` packaging and cleanup commits are executed.
+
+---
+
+## Source 32: `steps/0140-prepare-closeout-and-pr-handoff/notes/completed-package-and-cleanup-sequence.md`
+
+# Completed Package and Cleanup Sequence
+
+## Purpose
+- Document exact closure sequencing for this execution branch so completion is deterministic and auditable.
+
+## Sequence
+1. Create completed packages on the feature branch:
+   - `Plans/Completed/thin-clients-first-solution-structure/`
+   - `Plans/Completed/mvp-prompting-gemini-contract-baseline/`
+   - `Plans/Completed/mvp-chain-runner-local-persistence-baseline/`
+2. In each completed package, include:
+   - `draft-baseline/<plan-slug>-draft.md`
+   - `draft-baseline/source-ref.md`
+   - `implementation/` (verbatim snapshot of corresponding `Plans/InProgress/<plan-slug>/`)
+   - `closeout/closeout.md`
+   - `closeout/outcomes.md`
+   - `closeout/traceability.md`
+   - `closeout/archive-note.md`
+3. Commit completed package creation as a standalone commit.
+4. Remove active stage folders in a separate cleanup commit:
+   - `Plans/Drafts/<plan-slug>/`
+   - `Plans/InProgress/<plan-slug>/`
+5. Update closure SHA fields (merge, completed-package, cleanup) in completed-package traceability files.
+6. Signal PR-ready handoff to the user, then wait for user-owned PR creation/merge.
+
+## Suggested Commit Message Pattern
+- Commit A (completed package):
+  - `planning(<plan-slug>/closeout): create completed package for pr handoff`
+- Commit B (cleanup):
+  - `planning(<plan-slug>/cleanup): remove active draft and inprogress folders`
+
+## Guardrails
+- Do not combine completed-package creation and active-folder cleanup in one commit.
+- Do not mutate draft baseline semantics during closure packaging.
+- Keep all closeout evidence path-referenced and SHA-addressable.
+
+---
+
+## Source 33: `artifacts/initial-solution-shape.md`
 
 # Initial Solution Shape (Brainstorm v0)
 
@@ -1501,7 +1750,7 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 
 ---
 
-## Source 30: `promotion.md`
+## Source 34: `promotion.md`
 
 # Promotion Trace
 
