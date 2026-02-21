@@ -49,7 +49,20 @@ public sealed class GeminiLlmClient : ILlmClient
             response.Metadata);
 
         var normalizedResponse = new NormalizedResponse(response.ContentText ?? string.Empty);
-        var tokenAccounting = MapTokenAccounting(response.Usage);
+        if (!TryMapTokenAccounting(
+            response.Usage,
+            out var tokenAccounting,
+            out var invalidUsageField,
+            out var invalidUsageValue))
+        {
+            return LlmExecutionResult.Failed(
+                CreateInvalidUsageFailure(
+                    response.ModelId ?? UnknownModelId,
+                    response.RawSnapshotRef,
+                    invalidUsageField!,
+                    invalidUsageValue));
+        }
+
         var envelope = new NormalizedResponseEnvelope(
             normalizedResponse,
             tokenAccounting,
@@ -80,24 +93,92 @@ public sealed class GeminiLlmClient : ILlmClient
             protocolError.Diagnostics);
     }
 
-    private static TokenAccounting MapTokenAccounting(GeminiUsage? usage)
+    private LlmFailure CreateInvalidUsageFailure(
+        string modelId,
+        string? rawSnapshotRef,
+        string invalidUsageField,
+        int invalidUsageValue)
     {
-        if (usage is null)
+        var diagnostics = new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            return TokenAccounting.Unknown();
-        }
+            ["provider_error_code"] = "invalid_usage_payload",
+            ["invalid_usage_field"] = invalidUsageField,
+            ["invalid_usage_value"] = invalidUsageValue.ToString(),
+        };
 
-        return new TokenAccounting(
-            MapTokenValue(usage.PromptTokens),
-            MapTokenValue(usage.OutputTokens),
-            MapTokenValue(usage.TotalTokens),
-            MapTokenValue(usage.ThoughtTokens));
+        var metadata = new ProviderMetadata(ProviderKey, modelId, diagnostics);
+        return new LlmFailure(
+            LlmReasonCodes.ProviderProtocolError,
+            "Provider usage payload contained a negative token count.",
+            metadata,
+            rawSnapshotRef,
+            diagnostics);
     }
 
-    private static TokenUsageValue MapTokenValue(int? value)
+    private static bool TryMapTokenAccounting(
+        GeminiUsage? usage,
+        out TokenAccounting tokenAccounting,
+        out string? invalidUsageField,
+        out int invalidUsageValue)
     {
-        return value is null
-            ? TokenUsageValue.Unknown()
-            : TokenUsageValue.Known(value.Value);
+        invalidUsageField = null;
+        invalidUsageValue = default;
+
+        if (usage is null)
+        {
+            tokenAccounting = TokenAccounting.Unknown();
+            return true;
+        }
+
+        if (!TryMapTokenValue(usage.PromptTokens, out var promptTokens, out invalidUsageValue))
+        {
+            invalidUsageField = "prompt_tokens";
+            tokenAccounting = TokenAccounting.Unknown();
+            return false;
+        }
+
+        if (!TryMapTokenValue(usage.OutputTokens, out var outputTokens, out invalidUsageValue))
+        {
+            invalidUsageField = "output_tokens";
+            tokenAccounting = TokenAccounting.Unknown();
+            return false;
+        }
+
+        if (!TryMapTokenValue(usage.TotalTokens, out var totalTokens, out invalidUsageValue))
+        {
+            invalidUsageField = "total_tokens";
+            tokenAccounting = TokenAccounting.Unknown();
+            return false;
+        }
+
+        if (!TryMapTokenValue(usage.ThoughtTokens, out var thoughtTokens, out invalidUsageValue))
+        {
+            invalidUsageField = "thought_tokens";
+            tokenAccounting = TokenAccounting.Unknown();
+            return false;
+        }
+
+        tokenAccounting = new TokenAccounting(promptTokens, outputTokens, totalTokens, thoughtTokens);
+        return true;
+    }
+
+    private static bool TryMapTokenValue(int? value, out TokenUsageValue tokenUsageValue, out int invalidUsageValue)
+    {
+        invalidUsageValue = default;
+        if (value is null)
+        {
+            tokenUsageValue = TokenUsageValue.Unknown();
+            return true;
+        }
+
+        if (value.Value < 0)
+        {
+            tokenUsageValue = default;
+            invalidUsageValue = value.Value;
+            return false;
+        }
+
+        tokenUsageValue = TokenUsageValue.Known(value.Value);
+        return true;
     }
 }

@@ -38,6 +38,10 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
             var record = await JsonSerializer.DeserializeAsync<WorkflowRunRecord>(stream, SerializerOptions, cancellationToken).ConfigureAwait(false);
             return record;
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception exception)
         {
             throw new InvalidOperationException(
@@ -98,6 +102,10 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
             }
 
             File.Move(temporaryPath, targetPath, overwrite: true);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception exception)
         {

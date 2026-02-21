@@ -108,6 +108,30 @@ public sealed class GeminiAdapterContractProofTests
             });
     }
 
+    [Fact]
+    public async Task GeminiAdapter_NegativeUsage_EmitsProviderProtocolErrorReasonCode()
+    {
+        var protocolClient = new StubGeminiProtocolClient(
+            _ => GeminiProtocolResult.Success(
+                new GeminiProtocolResponse(
+                    ContentText: "Generated output with invalid usage telemetry",
+                    Usage: new GeminiUsage(-1, 2, 3, 4),
+                    ModelId: "gemini-2.5-pro",
+                    RawSnapshotRef: "snapshots/gemini-negative-usage.json")));
+
+        var llmClient = new GeminiLlmClient(protocolClient);
+        var executionResult = await llmClient.ExecuteAsync(CreateExecutionEnvelope());
+
+        Assert.False(executionResult.IsSuccess);
+        var failure = Assert.IsType<LlmFailure>(executionResult.Failure);
+        Assert.Equal(LlmReasonCodes.ProviderProtocolError, failure.ReasonCode);
+        Assert.Equal("snapshots/gemini-negative-usage.json", failure.RawSnapshotRef);
+        Assert.NotNull(failure.Diagnostics);
+        Assert.Equal("prompt_tokens", failure.Diagnostics!["invalid_usage_field"]);
+        Assert.Equal("-1", failure.Diagnostics["invalid_usage_value"]);
+        Assert.Equal("invalid_usage_payload", failure.Diagnostics["provider_error_code"]);
+    }
+
     private static ExecutionEnvelope CreateExecutionEnvelope()
     {
         return new ExecutionEnvelope(

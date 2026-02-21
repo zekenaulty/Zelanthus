@@ -283,6 +283,38 @@ public sealed class ChainRunnerContractProofTests
         Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
     }
 
+    [Fact]
+    public async Task ChainRunner_WorkflowIdentityMismatch_EmitsInvalidStateTransition()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "workflow-identity-match",
+            WorkflowKind.CognitiveChain,
+            [CreateWorkflowStep("0010-plan-step", StepKind.PlanStep)]);
+
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var mismatchedCursor = new WorkflowRunCursor(
+            Guid.NewGuid(),
+            workflowKey: "workflow-identity-mismatch",
+            workflowVersion: workflow.WorkflowVersion + 1,
+            workflowKind: WorkflowKind.CognitiveChain,
+            runState: RunState.Created,
+            currentStepIndex: 0,
+            lastSuccessStepIndex: -1,
+            nextTurnIndex: 0,
+            nextCheckpointSequence: 0,
+            latestThinkingPersistenceKey: null);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, mismatchedCursor));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(0, stepExecutor.Invocations);
+    }
+
     [Theory]
     [InlineData("missing_required_placeholder")]
     [InlineData("checkpoint_write_failed")]
@@ -429,6 +461,32 @@ public sealed class ChainRunnerContractProofTests
                     Diagnostics: null)));
 
         Assert.Contains(LocalPersistenceReasonCodes.ArtifactReadFailed, exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task LocalFileWorkflowRunStore_SaveRunRecord_CancelledToken_ThrowsOperationCanceledException()
+    {
+        var runStore = new LocalFileWorkflowRunStore(CreateWorkflowRunPaths());
+        var runId = Guid.NewGuid();
+        var runRecord = new WorkflowRunRecord(
+            runId,
+            WorkflowKey: "workflow.cancellation.check",
+            WorkflowVersion: 1,
+            WorkflowKind: WorkflowKind.CognitiveChain.ToString(),
+            RunState: RunState.Created.ToString(),
+            CurrentStepIndex: 0,
+            LastSuccessStepIndex: -1,
+            NextTurnIndex: 0,
+            NextCheckpointSequence: 0,
+            LatestThinkingPersistenceKey: null,
+            EffectiveStepKeys: ["0010-plan-step"],
+            UpdatedUtc: DateTimeOffset.UtcNow);
+
+        using var cancellation = new CancellationTokenSource();
+        await cancellation.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => runStore.SaveRunRecordAsync(runRecord, cancellation.Token));
     }
 
     private static WorkflowDefinition CreateWorkflowDefinition(

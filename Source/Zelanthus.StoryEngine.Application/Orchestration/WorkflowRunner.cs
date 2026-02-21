@@ -19,6 +19,19 @@ public sealed class WorkflowRunner : IWorkflowRunner
         var runCursor = executionRequest.WorkflowRunCursor;
         var policyReasonCode = default(string?);
 
+        if (!IsWorkflowIdentityAligned(
+            workflowDefinition.WorkflowKey,
+            workflowDefinition.WorkflowVersion,
+            runCursor.WorkflowKey,
+            runCursor.WorkflowVersion))
+        {
+            runCursor.MarkTerminalFailure();
+            return WorkflowExecutionResult.TerminalFailure(
+                RunnerReasonCodes.InvalidStateTransition,
+                runCursor,
+                workflowDefinition.Steps.Select(step => step.StepKey).ToArray());
+        }
+
         if (!IsWorkflowKindAligned(workflowDefinition.WorkflowKind, runCursor.WorkflowKind))
         {
             runCursor.MarkTerminalFailure();
@@ -94,6 +107,16 @@ public sealed class WorkflowRunner : IWorkflowRunner
     private static bool IsWorkflowKindAligned(WorkflowKind workflowKind, WorkflowKind runWorkflowKind)
     {
         return workflowKind == runWorkflowKind;
+    }
+
+    private static bool IsWorkflowIdentityAligned(
+        string workflowKey,
+        int workflowVersion,
+        string runWorkflowKey,
+        int runWorkflowVersion)
+    {
+        return string.Equals(workflowKey, runWorkflowKey, StringComparison.Ordinal)
+            && workflowVersion == runWorkflowVersion;
     }
 
     private static ResumeStart ResolveStartStepIndex(WorkflowRunCursor runCursor)
