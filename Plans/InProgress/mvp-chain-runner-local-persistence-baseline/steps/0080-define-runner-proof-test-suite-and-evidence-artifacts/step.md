@@ -49,6 +49,9 @@
 - Evidence spec includes deterministic artifact path checks using `<turn-index>-<step-key>` naming only.
 - Evidence spec includes canonical `turn.json` checks, deterministic counter reservation assertions, and crash/no-reuse assertions.
 - Evidence spec includes deterministic failure artifact naming checks (`failure-<turn-index>.json`).
+- Evidence spec includes deterministic checkpoint/failure filename checks:
+  - `checkpoints/checkpoint-<checkpoint-sequence>.json`
+  - `failures/failure-<turn-index>.json`
 - Evidence spec includes deterministic route-hook generated step-key and persisted effective-queue checks.
 - Evidence spec includes required per-step `prompt_ref` capture and deterministic `missing_prompt_reference` failure proof.
 - Evidence spec includes `workflow_kind`/`chain_mode` alignment checks and deterministic mismatch failure proof.

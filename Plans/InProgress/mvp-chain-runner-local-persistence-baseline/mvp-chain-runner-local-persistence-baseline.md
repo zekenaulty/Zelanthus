@@ -3,7 +3,7 @@
 ## Compiled Plan Metadata
 
 - Plan Scope: `InProgress/mvp-chain-runner-local-persistence-baseline`
-- Compiled At (UTC): `2026-02-21T12:09:55Z`
+- Compiled At (UTC): `2026-02-21T12:31:08Z`
 - Source Document Count: `31`
 - Projection File: `mvp-chain-runner-local-persistence-baseline.md`
 
@@ -58,6 +58,10 @@
     - `Source/Zelanthus.StoryEngine.Domain`
     - `Source/Zelanthus.StoryEngine.Application`
     - `Source/Zelanthus.StoryEngine.Infrastructure`
+  - Domain scope policy for Plan 2:
+    - `Source/Zelanthus.StoryEngine.Domain` is in scope for minimal runner value objects/invariants only.
+    - If the Domain project already exists, extend it in place; do not create an alternate Domain project.
+    - Domain scope excludes persistence, provider protocol mapping, and API composition concerns.
   - Plan-level dependency/reference design for integrating:
     - `Source/Zelanthus.Prompting`
     - `Source/Zelanthus.Llm.Clients.Abstractions`
@@ -68,6 +72,7 @@
   - Runner proof-test planning updates in `Tests/Zelanthus.WorkflowContractProofs.Tests`.
   - Minimal workflow abstraction planning that supports data/code-defined workflow expansion without introducing full meta workflow complexity.
 - Out:
+  - Broad domain-model expansion beyond runner invariants required for Plan 2.
   - Production persistence (Postgres) setup and migrations.
   - Multi-provider runtime routing and additional provider adapters.
   - Prompt template import/sub-template implementation details.
@@ -86,6 +91,7 @@
 - Local persistence contract is explicit:
   - workspace-local file/path-backed stores only,
   - no external database/cache/queue/service-hosted storage in Plan 2.
+  - file naming convention is single-sourced and consistent across Decision `0002`, local persistence layout artifact, and runner proof evidence spec.
 - Run/turn state machine is explicit:
   - state enums are pinned,
   - legal and illegal transitions are documented and reason-coded.
@@ -291,7 +297,7 @@
 artifacts/workflow-runs/<run-id>/
   run.json
   checkpoints/
-    checkpoint-<sequence>.json
+    checkpoint-<checkpoint-sequence>.json
   turns/
     <turn-index>-<step-key>/
       turn.json
@@ -423,6 +429,9 @@ artifacts/workflow-runs/<run-id>/
   - Verify `workflow_kind`/`chain_mode` mismatch is rejected deterministically with `invalid_state_transition`.
   - Verify `route_hook_key` values satisfy pinned regex and generated step keys remain path-safe.
   - Verify local persistence definition is workspace-local only and excludes external services.
+  - Verify checkpoint/failure filename conventions are single-sourced and consistent before implementing persistence layout:
+    - `checkpoints/checkpoint-<checkpoint-sequence>.json`
+    - `failures/failure-<turn-index>.json`
   - Verify artifact folder naming is deterministic and uses `<turn-index>-<step-key>` only.
   - Verify `turn.json` is authoritative for turn identity/objective metadata.
   - Verify provenance artifact mapping is strict superset -> Prompting required fields.
@@ -436,6 +445,7 @@ artifacts/workflow-runs/<run-id>/
 
 ## Rollout / Rollback
 - Rollout:
+  - Do not implement local persistence layout code until filename conventions are confirmed consistent across Decision `0002`, step `0040` layout artifact, and step `0080` evidence spec.
   - execute steps in order on `feature/thin-clients-first-solution-structure` with evidence captured per step.
   - signal PR-ready handoff to the user after completion package and cleanup commit are prepared.
 - Rollback:
@@ -609,7 +619,7 @@ artifacts/workflow-runs/<run-id>/
 
 ## Required Stored Artifacts
 - Run-level record (`run.json`)
-- Checkpoint records (`checkpoints/checkpoint-<sequence>.json`)
+- Checkpoint records (`checkpoints/checkpoint-<checkpoint-sequence>.json`)
 - Turn-level artifacts:
   - canonical turn metadata record (`turn.json`)
   - raw response snapshot
@@ -1282,6 +1292,10 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - Crash-safe reservation order is explicit: reserve counter in `run.json`, persist atomically, then write dependent artifacts.
 - Minimum atomic write strategy is explicit (`temp in same directory -> flush/fsync -> atomic replace`).
 - Failure artifact naming anchor is explicit: `failure-<turn-index>.json`.
+- Checkpoint/failure filename conventions are single-sourced and consistent across:
+  - Decision `0002`,
+  - local persistence layout artifact,
+  - runner proof evidence spec.
 - Plan explicitly excludes external database/cache/queue/service persistence in Plan 2.
 
 ## Issues
@@ -1530,6 +1544,9 @@ Step order must still be visible in folder names (`NNNN-semantic-step-name`).
 - Evidence spec includes deterministic artifact path checks using `<turn-index>-<step-key>` naming only.
 - Evidence spec includes canonical `turn.json` checks, deterministic counter reservation assertions, and crash/no-reuse assertions.
 - Evidence spec includes deterministic failure artifact naming checks (`failure-<turn-index>.json`).
+- Evidence spec includes deterministic checkpoint/failure filename checks:
+  - `checkpoints/checkpoint-<checkpoint-sequence>.json`
+  - `failures/failure-<turn-index>.json`
 - Evidence spec includes deterministic route-hook generated step-key and persisted effective-queue checks.
 - Evidence spec includes required per-step `prompt_ref` capture and deterministic `missing_prompt_reference` failure proof.
 - Evidence spec includes `workflow_kind`/`chain_mode` alignment checks and deterministic mismatch failure proof.
@@ -1842,7 +1859,7 @@ WorkflowRunContext
 artifacts/workflow-runs/<run-id>/
   run.json
   checkpoints/
-    checkpoint-<sequence>.json
+    checkpoint-<checkpoint-sequence>.json
   turns/
     <turn-index>-<step-key>/
       turn.json
@@ -2048,7 +2065,7 @@ artifacts/workflow-runs/<run-id>/
 
 ## Required Evidence Artifacts
 - `artifacts/workflow-runs/<run-id>/run.json`
-- `artifacts/workflow-runs/<run-id>/checkpoints/checkpoint-<sequence>.json`
+- `artifacts/workflow-runs/<run-id>/checkpoints/checkpoint-<checkpoint-sequence>.json`
 - `artifacts/workflow-runs/<run-id>/turns/<turn-index>-<step-key>/turn.json`
 - `artifacts/workflow-runs/<run-id>/turns/<turn-index>-<step-key>/provenance.json`
 - `artifacts/workflow-runs/<run-id>/turns/<turn-index>-<step-key>/validation.json`
@@ -2188,6 +2205,10 @@ artifacts/workflow-runs/<run-id>/
 ## Scope
 - Plan: `mvp-chain-runner-local-persistence-baseline`
 - Purpose: lock dependency and implementation boundaries before Plan 2 promotion to `InProgress`.
+- Domain clarification:
+  - `Source/Zelanthus.StoryEngine.Domain` is in scope only for minimal runner value objects/invariants.
+  - If `Source/Zelanthus.StoryEngine.Domain` already exists, extend it in place; do not create an alternate Domain project.
+  - Domain scope excludes persistence, provider protocol mapping, and API composition concerns.
 
 ## Matrix
 | Project | Primary Responsibility | Allowed Runtime References | Forbidden Runtime References | Planned Test Coverage |

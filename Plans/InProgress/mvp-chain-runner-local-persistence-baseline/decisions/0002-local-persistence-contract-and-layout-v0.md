@@ -10,7 +10,7 @@
 
 ## Required Stored Artifacts
 - Run-level record (`run.json`)
-- Checkpoint records (`checkpoints/checkpoint-<sequence>.json`)
+- Checkpoint records (`checkpoints/checkpoint-<checkpoint-sequence>.json`)
 - Turn-level artifacts:
   - canonical turn metadata record (`turn.json`)
   - raw response snapshot

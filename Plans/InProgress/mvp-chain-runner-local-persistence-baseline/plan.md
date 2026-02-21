@@ -11,6 +11,10 @@
     - `Source/Zelanthus.StoryEngine.Domain`
     - `Source/Zelanthus.StoryEngine.Application`
     - `Source/Zelanthus.StoryEngine.Infrastructure`
+  - Domain scope policy for Plan 2:
+    - `Source/Zelanthus.StoryEngine.Domain` is in scope for minimal runner value objects/invariants only.
+    - If the Domain project already exists, extend it in place; do not create an alternate Domain project.
+    - Domain scope excludes persistence, provider protocol mapping, and API composition concerns.
   - Plan-level dependency/reference design for integrating:
     - `Source/Zelanthus.Prompting`
     - `Source/Zelanthus.Llm.Clients.Abstractions`
@@ -21,6 +25,7 @@
   - Runner proof-test planning updates in `Tests/Zelanthus.WorkflowContractProofs.Tests`.
   - Minimal workflow abstraction planning that supports data/code-defined workflow expansion without introducing full meta workflow complexity.
 - Out:
+  - Broad domain-model expansion beyond runner invariants required for Plan 2.
   - Production persistence (Postgres) setup and migrations.
   - Multi-provider runtime routing and additional provider adapters.
   - Prompt template import/sub-template implementation details.
@@ -39,6 +44,7 @@
 - Local persistence contract is explicit:
   - workspace-local file/path-backed stores only,
   - no external database/cache/queue/service-hosted storage in Plan 2.
+  - file naming convention is single-sourced and consistent across Decision `0002`, local persistence layout artifact, and runner proof evidence spec.
 - Run/turn state machine is explicit:
   - state enums are pinned,
   - legal and illegal transitions are documented and reason-coded.
@@ -244,7 +250,7 @@
 artifacts/workflow-runs/<run-id>/
   run.json
   checkpoints/
-    checkpoint-<sequence>.json
+    checkpoint-<checkpoint-sequence>.json
   turns/
     <turn-index>-<step-key>/
       turn.json
@@ -376,6 +382,9 @@ artifacts/workflow-runs/<run-id>/
   - Verify `workflow_kind`/`chain_mode` mismatch is rejected deterministically with `invalid_state_transition`.
   - Verify `route_hook_key` values satisfy pinned regex and generated step keys remain path-safe.
   - Verify local persistence definition is workspace-local only and excludes external services.
+  - Verify checkpoint/failure filename conventions are single-sourced and consistent before implementing persistence layout:
+    - `checkpoints/checkpoint-<checkpoint-sequence>.json`
+    - `failures/failure-<turn-index>.json`
   - Verify artifact folder naming is deterministic and uses `<turn-index>-<step-key>` only.
   - Verify `turn.json` is authoritative for turn identity/objective metadata.
   - Verify provenance artifact mapping is strict superset -> Prompting required fields.
@@ -389,6 +398,7 @@ artifacts/workflow-runs/<run-id>/
 
 ## Rollout / Rollback
 - Rollout:
+  - Do not implement local persistence layout code until filename conventions are confirmed consistent across Decision `0002`, step `0040` layout artifact, and step `0080` evidence spec.
   - execute steps in order on `feature/thin-clients-first-solution-structure` with evidence captured per step.
   - signal PR-ready handoff to the user after completion package and cleanup commit are prepared.
 - Rollback:

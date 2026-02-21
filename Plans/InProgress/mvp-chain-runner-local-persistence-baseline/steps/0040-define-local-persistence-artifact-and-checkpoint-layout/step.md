@@ -40,6 +40,10 @@
 - Crash-safe reservation order is explicit: reserve counter in `run.json`, persist atomically, then write dependent artifacts.
 - Minimum atomic write strategy is explicit (`temp in same directory -> flush/fsync -> atomic replace`).
 - Failure artifact naming anchor is explicit: `failure-<turn-index>.json`.
+- Checkpoint/failure filename conventions are single-sourced and consistent across:
+  - Decision `0002`,
+  - local persistence layout artifact,
+  - runner proof evidence spec.
 - Plan explicitly excludes external database/cache/queue/service persistence in Plan 2.
 
 ## Issues
