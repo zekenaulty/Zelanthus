@@ -37,7 +37,7 @@ Source layout and namespace isolation:
 - High-churn boundaries (especially `Application/Contracts` and `Infrastructure/Storage`) must use second-tier namespaces by concern.
 - Storage implementations must be isolated by backend type (for example `Storage/Local`, `Storage/Postgres`) with shared abstractions/records in their own namespaces.
 - If a file name needs scope tokens to stay understandable, split by folder and narrow namespace instead.
-- `ChainMode` ownership is `Zelanthus.Llm.Clients.Abstractions.Enums` only; domain workflow mode is represented by `WorkflowKind`.
+- Use canonical orchestration terms from `Plans/README.md`: `WorkflowTopology`, `WorkflowNodeExecutionKind`, and `LlmTaskMode`.
 
 Git and execution non-negotiables:
 - Planning work (`Plans/Brainstorms`, `Plans/Drafts`, doctrine/readme updates) defaults to `main`/trunk.

@@ -1,6 +1,7 @@
 # Reference workspaces are local-only unless explicitly committed.
+References
 References/*
-!References/.gitkeep
+Ref
 
 # ---- OS files ----
 .DS_Store
