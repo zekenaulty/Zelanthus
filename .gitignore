@@ -1,5 +1,6 @@
-References
+# Reference workspaces are local-only unless explicitly committed.
 References/*
+!References/.gitkeep
 
 # ---- OS files ----
 .DS_Store
@@ -10,8 +11,6 @@ $RECYCLE.BIN/
 Icon?
 .Spotlight-V100
 .Trashes
-
-reference
 
 # ---- IDEs / Editors ----
 .vs/
@@ -34,11 +33,8 @@ _ReSharper*/
 [Oo]ut/
 [Rr]elease*/
 [Dd]ebug*/
-[Aa]rtifacts/
-!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/artifacts/
-!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/artifacts/**/*.md
-!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/*/artifacts/
-!Plans/Drafts/mvp-chain-runner-local-persistence-baseline/steps/*/artifacts/**/*.md
+Source/**/[Aa]rtifacts/
+Tests/**/[Aa]rtifacts/
 [Ll]og/
 [Ll]ogs/
 [Ll]ogFiles/
@@ -67,9 +63,6 @@ packages/
 !packages/build/
 *.nupkg
 *.snupkg
-
-# Rider / JetBrains
-.idea/
 
 # ---- Node / npm / Yarn / PNPM ----
 node_modules/
@@ -141,5 +134,4 @@ log/
 *.log
 .tmp/
 .temp/
-
 temp_patch.txt
