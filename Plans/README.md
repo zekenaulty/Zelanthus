@@ -9,6 +9,13 @@ Primary goals:
 - Preserve history without polluting active plan areas.
 - Make plans clear for humans and LLM/agent workflows.
 
+## Locked Terms and Axes
+- `WorkflowTopology` describes workflow shape/topology only.
+- `WorkflowNodeExecutionKind` describes node execution type only (`LlmTask`, `CodeTask`).
+- `LlmTaskMode` describes LLM node mode only (`CognitiveChain`, `ConversationalChain`, `SingleCall`).
+- These names supersede legacy `WorkflowKind`/`StepKind` usage.
+- See `Plans/terminology-supersession-map.md` for legacy crosswalk and deprecations.
+
 ## Core Rules
 - Folder scope is the primary scope boundary.
 - Every plan must live in its own plan folder.
@@ -394,7 +401,7 @@ Rules:
 - Keep naming semantic and domain-aligned.
 - Keep test project names semantic and purpose-based (for example `Zelanthus.WorkflowContractProofs.Tests`).
 - Avoid generic test project names with weak intent (`MvpHarness`, `TempTests`, `MiscTests`).
-- `ChainMode` is owned by LLM client abstractions; workflow/domain mode is represented by `WorkflowKind`.
+- `ChainMode` is legacy terminology in older artifacts and is superseded by `LlmTaskMode` for LLM node mode semantics.
 - Enforce test coverage for core domain/application behavior.
 - Prefer containerized local dependency workflows for repeatable setup and integration testing.
 - Keep documentation and plan artifacts aligned with real code behavior.

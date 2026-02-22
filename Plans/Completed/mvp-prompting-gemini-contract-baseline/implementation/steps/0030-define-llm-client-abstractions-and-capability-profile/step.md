@@ -6,6 +6,11 @@
 ## Context
 - Provider integrations must conform to shared contracts before adapter implementation begins.
 
+## Terminology Update Note
+- This completed step note contains legacy naming.
+- See inline `RENAMED TO` annotations and `Plans/terminology-supersession-map.md` for canonical terms.
+- No behavioral intent changed; this is a naming clarification only.
+
 ## Git Branch
 - `feature/thin-clients-first-solution-structure`
 
@@ -17,7 +22,7 @@
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `Source/Zelanthus.Llm.Clients.Abstractions/ChainMode.cs`
+- `Source/Zelanthus.Llm.Clients.Abstractions/ChainMode.cs` (`ChainMode` RENAMED TO: `LlmTaskMode`; meaning now: LLM node mode only. See: `Plans/terminology-supersession-map.md`)
 - `Source/Zelanthus.Llm.Clients.Abstractions/ExecutionContext.cs`
 - `Source/Zelanthus.Llm.Clients.Abstractions/ExecutionEnvelope.cs`
 - `Source/Zelanthus.Llm.Clients.Abstractions/ILlmClient.cs`

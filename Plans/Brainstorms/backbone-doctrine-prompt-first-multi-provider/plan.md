@@ -1,5 +1,13 @@
 # backbone-doctrine-prompt-first-multi-provider
 
+## Lifecycle Status
+- Status: `frozen-doctrine-baseline`
+- Stage: `Brainstorms`
+- Role: `canonical doctrine anchor for prompt-first/multi-provider execution policy`
+- Change Policy:
+  - Do not mutate semantics in-place.
+  - Introduce doctrine changes via a new brainstorm/draft that supersedes this baseline.
+
 ## Objective
 - Define Zelanthus backbone doctrine for a prompt-first, pipeline-driven system with first-class thought support and multi-provider readiness.
 
@@ -83,3 +91,4 @@
 
 ## Notes
 - This doctrine intentionally keeps correctness artifact-driven while still treating model thought/continuity as a first-class capability.
+- This brainstorm remains in `Plans/Brainstorms` as an active dependency anchor for completed plan traceability.

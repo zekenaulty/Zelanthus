@@ -1,5 +1,10 @@
 # mvp-chain-runner-local-persistence-baseline
 
+## Terminology Update Note
+- This completed plan uses legacy names.
+- See inline `RENAMED TO` annotations and `Plans/terminology-supersession-map.md` for current canonical terms.
+- No behavioral intent changed; this is a naming clarification only.
+
 ## Compiled Plan Metadata
 
 - Plan Scope: `InProgress/mvp-chain-runner-local-persistence-baseline`
@@ -2130,7 +2135,7 @@ artifacts/workflow-runs/<run-id>/
 - `ChainRunner_VariableLengthQueue_RouteHookAppendsDeterministicGeneratedStepKeys_AndPersistsEffectiveQueue`
 - `ChainRunner_VariableLengthQueue_InvalidRouteHookKey_EmitsDeterministicValidationFailure`
 - `ChainRunner_WorkflowStepPromptRef_MissingOrInvalid_EmitsMissingPromptReference`
-- `ChainRunner_WorkflowKindChainModeMismatch_EmitsInvalidStateTransition`
+- `ChainRunner_WorkflowKindChainModeMismatch_EmitsInvalidStateTransition` (`WorkflowKind` RENAMED TO: `WorkflowTopology`; meaning now: workflow topology only. `ChainMode` RENAMED TO: `LlmTaskMode`; meaning now: LLM node mode only. See: `Plans/terminology-supersession-map.md`)
 - `ChainRunner_MissingRequiredPlaceholder_EmitsReasonCodeAndFailsDeterministically`
 - `ChainRunner_ProviderProtocolError_EmitsReasonCodeAndAppliesRetryPolicy`
 - `ChainRunner_CheckpointWriteFailure_EmitsCheckpointWriteFailedReasonCode`

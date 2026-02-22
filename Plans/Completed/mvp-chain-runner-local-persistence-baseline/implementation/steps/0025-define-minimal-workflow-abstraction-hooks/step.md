@@ -7,6 +7,11 @@
 - Prior attempts showed risk in tackling broad workflow systems too early.
 - Plan 2 needs only enough abstraction to support current chain runner correctness plus future route/branch expansion seams.
 
+## Terminology Update Note
+- This completed step note contains legacy naming.
+- See inline `RENAMED TO` annotations and `Plans/terminology-supersession-map.md` for canonical terms.
+- No behavioral intent changed; this is a naming clarification only.
+
 ## Git Branch
 - `feature/thin-clients-first-solution-structure`
 
@@ -20,8 +25,8 @@
 ## Files Changed
 - `Source/Zelanthus.StoryEngine.Domain/WorkflowKeyValidator.cs`
 - `Source/Zelanthus.StoryEngine.Domain/PromptReference.cs`
-- `Source/Zelanthus.StoryEngine.Domain/StepKind.cs`
-- `Source/Zelanthus.StoryEngine.Domain/WorkflowKind.cs`
+- `Source/Zelanthus.StoryEngine.Domain/StepKind.cs` (`StepKind` RENAMED TO: `WorkflowNodeExecutionKind` for execution-type semantics; phase role now tracked separately. See: `Plans/terminology-supersession-map.md`)
+- `Source/Zelanthus.StoryEngine.Domain/WorkflowKind.cs` (`WorkflowKind` RENAMED TO: `WorkflowTopology`; meaning now: workflow topology only. See: `Plans/terminology-supersession-map.md`)
 - `Source/Zelanthus.StoryEngine.Domain/WorkflowStepDefinition.cs`
 - `Source/Zelanthus.StoryEngine.Domain/WorkflowDefinition.cs`
 

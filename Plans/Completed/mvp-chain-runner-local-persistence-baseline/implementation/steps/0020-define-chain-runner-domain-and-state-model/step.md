@@ -6,6 +6,11 @@
 ## Context
 - Application orchestration and persistence mapping cannot be specified safely until run/turn state contracts are explicit.
 
+## Terminology Update Note
+- This completed step note contains legacy naming.
+- See inline `RENAMED TO` annotations and `Plans/terminology-supersession-map.md` for canonical terms.
+- No behavioral intent changed; this is a naming clarification only.
+
 ## Git Branch
 - `feature/thin-clients-first-solution-structure`
 
@@ -17,7 +22,7 @@
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
 
 ## Files Changed
-- `Source/Zelanthus.StoryEngine.Domain/ChainMode.cs`
+- `Source/Zelanthus.StoryEngine.Domain/ChainMode.cs` (`ChainMode` RENAMED TO: `LlmTaskMode`; meaning now: LLM node mode only. See: `Plans/terminology-supersession-map.md`)
 - `Source/Zelanthus.StoryEngine.Domain/RunState.cs`
 - `Source/Zelanthus.StoryEngine.Domain/TurnState.cs`
 - `Source/Zelanthus.StoryEngine.Domain/WorkflowRunCursor.cs`
