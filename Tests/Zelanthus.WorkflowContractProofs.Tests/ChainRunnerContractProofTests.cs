@@ -370,6 +370,39 @@ public sealed class ChainRunnerContractProofTests
         Assert.Equal(1, stepExecutor.Invocations);
     }
 
+    [Fact]
+    public async Task ChainRunner_NonRunnableCursorState_EmitsInvalidStateTransitionWithoutThrowing()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "non-runnable-cursor-state",
+            WorkflowKind.CognitiveChain,
+            [CreateWorkflowStep("0010-plan-step", StepKind.PlanStep)]);
+
+        var runCursor = new WorkflowRunCursor(
+            Guid.NewGuid(),
+            workflow.WorkflowKey,
+            workflow.WorkflowVersion,
+            workflow.WorkflowKind,
+            RunState.Succeeded,
+            currentStepIndex: 0,
+            lastSuccessStepIndex: 0,
+            nextTurnIndex: 1,
+            nextCheckpointSequence: 1,
+            latestThinkingPersistenceKey: null);
+
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(RunState.Succeeded, result.WorkflowRunCursor.RunState);
+        Assert.Equal(0, stepExecutor.Invocations);
+    }
+
     [Theory]
     [InlineData("missing_required_placeholder")]
     [InlineData("checkpoint_write_failed")]

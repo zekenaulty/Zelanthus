@@ -25,7 +25,7 @@ public sealed class WorkflowRunner : IWorkflowRunner
             runCursor.WorkflowKey,
             runCursor.WorkflowVersion))
         {
-            runCursor.MarkTerminalFailure();
+            MarkTerminalFailureIfRunnable(runCursor);
             return WorkflowExecutionResult.TerminalFailure(
                 RunnerReasonCodes.InvalidStateTransition,
                 runCursor,
@@ -34,7 +34,7 @@ public sealed class WorkflowRunner : IWorkflowRunner
 
         if (!IsWorkflowKindAligned(workflowDefinition.WorkflowKind, runCursor.WorkflowKind))
         {
-            runCursor.MarkTerminalFailure();
+            MarkTerminalFailureIfRunnable(runCursor);
             return WorkflowExecutionResult.TerminalFailure(
                 RunnerReasonCodes.InvalidStateTransition,
                 runCursor,
@@ -48,7 +48,17 @@ public sealed class WorkflowRunner : IWorkflowRunner
 
         if (stepIndex > effectiveSteps.Count)
         {
-            runCursor.MarkTerminalFailure();
+            MarkTerminalFailureIfRunnable(runCursor);
+            return WorkflowExecutionResult.TerminalFailure(
+                RunnerReasonCodes.InvalidStateTransition,
+                runCursor,
+                effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                policyReasonCode);
+        }
+
+        if (!RunStateTransitionRules.IsValidTransition(runCursor.RunState, RunState.Running))
+        {
+            MarkTerminalFailureIfRunnable(runCursor);
             return WorkflowExecutionResult.TerminalFailure(
                 RunnerReasonCodes.InvalidStateTransition,
                 runCursor,
@@ -65,7 +75,7 @@ public sealed class WorkflowRunner : IWorkflowRunner
                 var step = effectiveSteps[stepIndex];
                 if (step.PromptReference is null)
                 {
-                    runCursor.MarkTerminalFailure();
+                    MarkTerminalFailureIfRunnable(runCursor);
                     return WorkflowExecutionResult.TerminalFailure(
                         RunnerReasonCodes.MissingPromptReference,
                         runCursor,
@@ -92,7 +102,7 @@ public sealed class WorkflowRunner : IWorkflowRunner
                             policyReasonCode);
                     }
 
-                    runCursor.MarkTerminalFailure();
+                    MarkTerminalFailureIfRunnable(runCursor);
                     return WorkflowExecutionResult.TerminalFailure(
                         stepResult.ReasonCode!,
                         runCursor,
@@ -139,6 +149,14 @@ public sealed class WorkflowRunner : IWorkflowRunner
     {
         return string.Equals(workflowKey, runWorkflowKey, StringComparison.Ordinal)
             && workflowVersion == runWorkflowVersion;
+    }
+
+    private static void MarkTerminalFailureIfRunnable(WorkflowRunCursor runCursor)
+    {
+        if (RunStateTransitionRules.IsValidTransition(runCursor.RunState, RunState.FailedTerminal))
+        {
+            runCursor.MarkTerminalFailure();
+        }
     }
 
     private static ResumeStart ResolveStartStepIndex(WorkflowRunCursor runCursor)

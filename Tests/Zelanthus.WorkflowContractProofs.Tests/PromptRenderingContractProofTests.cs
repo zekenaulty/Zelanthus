@@ -126,4 +126,48 @@ public sealed class PromptRenderingContractProofTests
         var failure = Assert.IsType<RenderFailure>(result.RenderFailure);
         Assert.Equal(["alpha", "zeta"], failure.MissingPlaceholders);
     }
+
+    [Fact]
+    public void PromptRendering_TemplateContainsUnlistedPlaceholder_WithoutValue_ReturnsDeterministicFailure()
+    {
+        var template = new PromptTemplateDefinition(
+            promptId: "story.chapter.plan",
+            promptVersion: 1,
+            templateText: "Objective: {{objective}}\nTone: {{tone}}",
+            requiredPlaceholders: ["objective"]);
+
+        var result = _renderer.Render(
+            template,
+            new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["objective"] = "Plan chapter outline",
+            });
+
+        Assert.False(result.IsSuccess);
+        var failure = Assert.IsType<RenderFailure>(result.RenderFailure);
+        Assert.Equal(PromptReasonCodes.MissingRequiredPlaceholder, failure.ReasonCode);
+        Assert.Equal(["tone"], failure.MissingPlaceholders);
+    }
+
+    [Fact]
+    public void PromptRendering_TemplateContainsUnlistedPlaceholder_WithValue_RendersSuccessfully()
+    {
+        var template = new PromptTemplateDefinition(
+            promptId: "story.chapter.plan",
+            promptVersion: 1,
+            templateText: "Objective: {{objective}}\nTone: {{tone}}",
+            requiredPlaceholders: ["objective"]);
+
+        var result = _renderer.Render(
+            template,
+            new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["objective"] = "Plan chapter outline",
+                ["tone"] = "analytical",
+            });
+
+        Assert.True(result.IsSuccess);
+        var renderedPrompt = Assert.IsType<RenderedPrompt>(result.RenderedPrompt);
+        Assert.Equal("Objective: Plan chapter outline\nTone: analytical", renderedPrompt.RenderedText);
+    }
 }
