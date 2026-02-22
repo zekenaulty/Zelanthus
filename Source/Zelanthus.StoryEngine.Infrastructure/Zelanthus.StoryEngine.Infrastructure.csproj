@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Zelanthus.StoryEngine.Domain\Zelanthus.StoryEngine.Domain.csproj" />
+    <ProjectReference Include="..\Zelanthus.StoryEngine.Application\Zelanthus.StoryEngine.Application.csproj" />
+    <ProjectReference Include="..\Zelanthus.Prompting\Zelanthus.Prompting.csproj" />
+    <ProjectReference Include="..\Zelanthus.Llm.Clients.Abstractions\Zelanthus.Llm.Clients.Abstractions.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

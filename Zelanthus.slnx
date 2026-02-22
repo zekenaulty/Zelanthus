@@ -1,3 +1,15 @@
 <Solution>
+  <Folder Name="/Source/">
+    <Project Path="Source/Zelanthus.Llm.Clients.Abstractions/Zelanthus.Llm.Clients.Abstractions.csproj" />
+    <Project Path="Source/Zelanthus.Llm.Clients.Gemini/Zelanthus.Llm.Clients.Gemini.csproj" />
+    <Project Path="Source/Zelanthus.Prompting/Zelanthus.Prompting.csproj" />
+    <Project Path="Source/Zelanthus.StoryEngine.Application/Zelanthus.StoryEngine.Application.csproj" />
+    <Project Path="Source/Zelanthus.StoryEngine.Domain/Zelanthus.StoryEngine.Domain.csproj" />
+    <Project Path="Source/Zelanthus.StoryEngine.Infrastructure/Zelanthus.StoryEngine.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj" />
+    <Project Path="Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" />
+  </Folder>
   <Project Path="Source/Zelanthus.API/Zelanthus.API.csproj" />
 </Solution>

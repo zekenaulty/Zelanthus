@@ -381,10 +381,20 @@ Rules:
 - Keep domain logic in domain layers, not controllers or infrastructure glue.
 - Use clear separation of concerns across Domain, Application, Infrastructure, and API.
 - Avoid monolithic files/classes; split by responsibility.
+- Do not keep feature classes in project root folders.
+- Project-root `.cs` allowlist is only `Program.cs` and `GlobalUsings.cs`; all other source files must be folderized by concern.
+- Use semantic folders and matching namespaces (for example `Contracts/` -> `.Contracts`, `Workflows/` -> `.Workflows`, `Storage/` -> `.Storage`).
+- Treat one-tier folderization as a minimum baseline, not an end state.
+- If a folder starts accumulating mixed concerns, split immediately into second-tier semantic folders and namespaces.
+- High-change surfaces must use deeper isolation early (for example `Application/Contracts/RunExecution` vs `Application/Contracts/StepExecution`).
+- Storage concerns must isolate backend types by folder/namespace (for example `Storage/Local`, `Storage/Postgres`) with shared abstractions and records separated from implementations.
+- For Entity Framework-backed persistence, model tracked entities as `class` types (identity-based), not `record` types.
+- Use `record` types for value-style contracts/snapshots where value equality semantics are intentional.
 - Use composition and explicit interfaces where they add boundary clarity.
 - Keep naming semantic and domain-aligned.
 - Keep test project names semantic and purpose-based (for example `Zelanthus.WorkflowContractProofs.Tests`).
 - Avoid generic test project names with weak intent (`MvpHarness`, `TempTests`, `MiscTests`).
+- `ChainMode` is owned by LLM client abstractions; workflow/domain mode is represented by `WorkflowKind`.
 - Enforce test coverage for core domain/application behavior.
 - Prefer containerized local dependency workflows for repeatable setup and integration testing.
 - Keep documentation and plan artifacts aligned with real code behavior.
