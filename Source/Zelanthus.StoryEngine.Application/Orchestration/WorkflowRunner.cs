@@ -141,6 +141,16 @@ public sealed class WorkflowRunner : IWorkflowRunner
 
                 if (stepResult.AppendedSteps.Count > 0)
                 {
+                    if (HasDuplicateStepKeys(effectiveSteps, stepResult.AppendedSteps))
+                    {
+                        MarkTerminalFailureIfRunnable(runCursor);
+                        return WorkflowExecutionResult.TerminalFailure(
+                            RunnerReasonCodes.InvalidStateTransition,
+                            runCursor,
+                            effectiveSteps.Select(currentStep => currentStep.StepKey).ToArray(),
+                            policyReasonCode);
+                    }
+
                     effectiveSteps.AddRange(stepResult.AppendedSteps);
                 }
 
@@ -217,6 +227,25 @@ public sealed class WorkflowRunner : IWorkflowRunner
             .Any(group => group.Count() > 1);
 
         return !duplicateStepKeys;
+    }
+
+    private static bool HasDuplicateStepKeys(
+        IReadOnlyList<WorkflowStepDefinition> existingSteps,
+        IReadOnlyList<WorkflowStepDefinition> appendedSteps)
+    {
+        var stepKeys = new HashSet<string>(
+            existingSteps.Select(step => step.StepKey),
+            StringComparer.Ordinal);
+
+        foreach (var appendedStep in appendedSteps)
+        {
+            if (!stepKeys.Add(appendedStep.StepKey))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void MarkTerminalFailureIfRunnable(WorkflowRunCursor runCursor)

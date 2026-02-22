@@ -40,21 +40,33 @@ public sealed class WorkflowStepExecutionResult
 
     public static WorkflowStepExecutionResult RetryableFailure(string reasonCode)
     {
+        var validatedReasonCode = ValidateReasonCode(reasonCode);
         return new WorkflowStepExecutionResult(
             false,
             true,
-            reasonCode,
+            validatedReasonCode,
             null,
             null);
     }
 
     public static WorkflowStepExecutionResult TerminalFailure(string reasonCode)
     {
+        var validatedReasonCode = ValidateReasonCode(reasonCode);
         return new WorkflowStepExecutionResult(
             false,
             false,
-            reasonCode,
+            validatedReasonCode,
             null,
             null);
+    }
+
+    private static string ValidateReasonCode(string reasonCode)
+    {
+        if (string.IsNullOrWhiteSpace(reasonCode))
+        {
+            throw new ArgumentException("Reason code is required.", nameof(reasonCode));
+        }
+
+        return reasonCode;
     }
 }

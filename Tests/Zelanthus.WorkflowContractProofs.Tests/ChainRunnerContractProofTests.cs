@@ -405,6 +405,39 @@ public sealed class ChainRunnerContractProofTests
     }
 
     [Fact]
+    public async Task ChainRunner_VariableLengthQueue_DuplicateAppendedStepKey_EmitsInvalidStateTransition()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "route-tail-duplicate",
+            WorkflowKind.CognitiveChain,
+            [
+                CreateWorkflowStep("0010-plan-step", StepKind.PlanStep),
+                CreateWorkflowStep("0020-execute-step", StepKind.Execute),
+            ]);
+
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: context =>
+            {
+                if (context.StepIndex == 0)
+                {
+                    return WorkflowStepExecutionResult.Succeeded(
+                        appendedSteps: [CreateWorkflowStep("0020-execute-step", StepKind.Execute)]);
+                }
+
+                return WorkflowStepExecutionResult.Succeeded();
+            });
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(RunState.FailedTerminal, result.WorkflowRunCursor.RunState);
+    }
+
+    [Fact]
     public void ChainRunner_VariableLengthQueue_InvalidRouteHookKey_EmitsDeterministicValidationFailure()
     {
         var exception = Assert.Throws<ArgumentException>(
@@ -758,7 +791,14 @@ public sealed class ChainRunnerContractProofTests
     }
 
     [Fact]
-    public async Task LocalFileWorkflowRunStore_SaveRunRecord_WithSharedReadHandle_AllowsOverwrite()
+    public void WorkflowStepExecutionResult_RequiresNonEmptyReasonCode()
+    {
+        Assert.Throws<ArgumentException>(() => WorkflowStepExecutionResult.RetryableFailure(string.Empty));
+        Assert.Throws<ArgumentException>(() => WorkflowStepExecutionResult.TerminalFailure("   "));
+    }
+
+    [Fact]
+    public async Task LocalFileWorkflowRunStore_SaveRunRecord_WhenTargetLocked_PreservesExistingRecord()
     {
         var runPaths = CreateWorkflowRunPaths();
         var runStore = new LocalFileWorkflowRunStore(runPaths);
@@ -781,23 +821,27 @@ public sealed class ChainRunnerContractProofTests
         await runStore.SaveRunRecordAsync(firstRecord);
 
         var runRecordPath = runPaths.GetRunRecordPath(runId);
-        using var sharedReader = new FileStream(
-            runRecordPath,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.ReadWrite | FileShare.Delete);
-
         var secondRecord = firstRecord with
         {
             NextCheckpointSequence = 1,
             UpdatedUtc = DateTimeOffset.UtcNow,
         };
 
-        await runStore.SaveRunRecordAsync(secondRecord);
+        using (var blockingReader = new FileStream(
+                   runRecordPath,
+                   FileMode.Open,
+                   FileAccess.Read,
+                   FileShare.Read))
+        {
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => runStore.SaveRunRecordAsync(secondRecord));
+            Assert.Contains(LocalPersistenceReasonCodes.ArtifactWriteFailed, exception.Message, StringComparison.Ordinal);
+        }
+
         var reloadedRecord = await runStore.ReadRunRecordAsync(runId);
 
         Assert.NotNull(reloadedRecord);
-        Assert.Equal(1, reloadedRecord!.NextCheckpointSequence);
+        Assert.Equal(0, reloadedRecord!.NextCheckpointSequence);
     }
 
     [Fact]

@@ -87,6 +87,8 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
         CancellationToken cancellationToken,
         string writeFailureReasonCode)
     {
+        string? temporaryPath = null;
+
         try
         {
             var targetDirectory = Path.GetDirectoryName(targetPath)
@@ -94,7 +96,7 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
 
             Directory.CreateDirectory(targetDirectory);
 
-            var temporaryPath = Path.Combine(
+            temporaryPath = Path.Combine(
                 targetDirectory,
                 $".{Path.GetFileName(targetPath)}.{Guid.NewGuid():N}.tmp");
 
@@ -110,7 +112,8 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
                 await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            ReplaceOrMoveAtomically(temporaryPath, targetPath);
+            CommitTemporaryFileAtomically(temporaryPath, targetPath);
+            temporaryPath = null;
         }
         catch (OperationCanceledException)
         {
@@ -122,9 +125,16 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
                 $"{writeFailureReasonCode}: failed to write '{targetPath}'.",
                 exception);
         }
+        finally
+        {
+            if (temporaryPath is not null)
+            {
+                TryDeleteTemporaryFile(temporaryPath);
+            }
+        }
     }
 
-    private static void ReplaceOrMoveAtomically(string temporaryPath, string targetPath)
+    private static void CommitTemporaryFileAtomically(string temporaryPath, string targetPath)
     {
         try
         {
@@ -134,11 +144,6 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
         catch (FileNotFoundException)
         {
             MoveWithCreateRaceHandling(temporaryPath, targetPath);
-            return;
-        }
-        catch (IOException)
-        {
-            OverwriteExistingTargetFromTemporaryFile(temporaryPath, targetPath);
             return;
         }
     }
@@ -149,40 +154,32 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
         {
             File.Move(temporaryPath, targetPath);
         }
+        catch (FileNotFoundException)
+        {
+            throw;
+        }
         catch (IOException)
         {
-            // Another writer may have created the destination between replace and move.
+            File.Replace(temporaryPath, targetPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+        }
+        catch (UnauthorizedAccessException)
+        {
             File.Replace(temporaryPath, targetPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
         }
     }
 
-    private static void OverwriteExistingTargetFromTemporaryFile(string temporaryPath, string targetPath)
+    private static void TryDeleteTemporaryFile(string temporaryPath)
     {
         try
         {
-            using (var sourceStream = new FileStream(
-                temporaryPath,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read))
-            using (var destinationStream = new FileStream(
-                targetPath,
-                FileMode.Open,
-                FileAccess.Write,
-                FileShare.ReadWrite | FileShare.Delete,
-                bufferSize: 16 * 1024,
-                FileOptions.WriteThrough))
+            if (File.Exists(temporaryPath))
             {
-                destinationStream.SetLength(0);
-                sourceStream.CopyTo(destinationStream);
-                destinationStream.Flush(flushToDisk: true);
+                File.Delete(temporaryPath);
             }
-
-            File.Delete(temporaryPath);
         }
-        catch (FileNotFoundException)
+        catch
         {
-            MoveWithCreateRaceHandling(temporaryPath, targetPath);
+            // Best-effort cleanup only. Write outcome should not depend on temp file deletion.
         }
     }
 }
