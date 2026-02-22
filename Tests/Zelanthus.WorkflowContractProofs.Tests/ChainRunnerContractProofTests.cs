@@ -800,6 +800,23 @@ public sealed class ChainRunnerContractProofTests
         Assert.Equal(1, reloadedRecord!.NextCheckpointSequence);
     }
 
+    [Fact]
+    public async Task LocalFileWorkflowRunStore_ReadRunRecord_NullJsonPayload_ThrowsArtifactReadFailed()
+    {
+        var runPaths = CreateWorkflowRunPaths();
+        var runStore = new LocalFileWorkflowRunStore(runPaths);
+        var runId = Guid.NewGuid();
+        var runRecordPath = runPaths.GetRunRecordPath(runId);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(runRecordPath)!);
+        await File.WriteAllTextAsync(runRecordPath, "null");
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => runStore.ReadRunRecordAsync(runId));
+
+        Assert.Contains(LocalPersistenceReasonCodes.ArtifactReadFailed, exception.Message, StringComparison.Ordinal);
+    }
+
     private static WorkflowDefinition CreateWorkflowDefinition(
         string workflowKey,
         WorkflowKind workflowKind,

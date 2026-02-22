@@ -192,4 +192,26 @@ public sealed class PromptRenderingContractProofTests
         Assert.Equal(PromptReasonCodes.MissingRequiredPlaceholder, failure.ReasonCode);
         Assert.Equal(["<empty-placeholder>"], failure.MissingPlaceholders);
     }
+
+    [Fact]
+    public void PromptRendering_TemplateContainsZeroLengthPlaceholderToken_ReturnsDeterministicFailure()
+    {
+        var template = new PromptTemplateDefinition(
+            promptId: "story.chapter.plan",
+            promptVersion: 1,
+            templateText: "Objective: {{objective}}\nBroken: {{}}",
+            requiredPlaceholders: ["objective"]);
+
+        var result = _renderer.Render(
+            template,
+            new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["objective"] = "Plan chapter outline",
+            });
+
+        Assert.False(result.IsSuccess);
+        var failure = Assert.IsType<RenderFailure>(result.RenderFailure);
+        Assert.Equal(PromptReasonCodes.MissingRequiredPlaceholder, failure.ReasonCode);
+        Assert.Equal(["<empty-placeholder>"], failure.MissingPlaceholders);
+    }
 }

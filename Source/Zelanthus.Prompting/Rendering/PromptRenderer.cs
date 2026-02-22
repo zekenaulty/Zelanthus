@@ -56,7 +56,7 @@ public sealed partial class PromptRenderer : IPromptRenderer
                 templateDefinition.RequiredPlaceholders));
     }
 
-    [GeneratedRegex(@"\{\{(?<placeholder>[^{}]+)\}\}", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"\{\{(?<placeholder>[^{}]*)\}\}", RegexOptions.CultureInvariant)]
     private static partial Regex PlaceholderTokenPattern();
 
     private static void ValidatePlaceholderValueKeys(IReadOnlyDictionary<string, string?> placeholderValues)

@@ -40,6 +40,11 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
                 FileAccess.Read,
                 FileShare.ReadWrite | FileShare.Delete);
             var record = await JsonSerializer.DeserializeAsync<WorkflowRunRecord>(stream, SerializerOptions, cancellationToken).ConfigureAwait(false);
+            if (record is null)
+            {
+                throw new JsonException("Run record payload deserialized to null.");
+            }
+
             return record;
         }
         catch (OperationCanceledException)
