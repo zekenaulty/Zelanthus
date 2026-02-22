@@ -15,6 +15,7 @@
 - `e32c94d7f5df2c8a13c420f1645f9f4f8d2e6683`
 - `1235cb3545e3e6d52de3bc219805cee695d83973`
 - `22772ee470bca2e3e218a1bccd0a0f758e691ac6`
+- `937e82c5c33a6f20ee3d0b9ad12607eba9aada64`
 
 ## Commands Executed
 - `dotnet new classlib -n Zelanthus.StoryEngine.Domain -f net10.0 -o "Source/Zelanthus.StoryEngine.Domain"`
@@ -31,6 +32,8 @@
 - `dotnet build "Zelanthus.slnx"`
 - `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
 - `dotnet test "Tests/Zelanthus.Architecture.Tests/Zelanthus.Architecture.Tests.csproj"`
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
 - `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"`
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"`
@@ -67,6 +70,8 @@
 - `Source/Zelanthus.StoryEngine.Infrastructure/Storage/Local/LocalFileWorkflowRunStore.cs`
 - `Source/Zelanthus.Llm.Clients.Gemini/Clients/GeminiLlmClient.cs`
 - `Tests/Zelanthus.WorkflowContractProofs.Tests/GeminiAdapterContractProofTests.cs`
+- `Source/Zelanthus.Prompting/Rendering/PromptRenderer.cs`
+- `Tests/Zelanthus.WorkflowContractProofs.Tests/PromptRenderingContractProofTests.cs`
 
 ## Tests / Results
 - `dotnet build "Zelanthus.slnx"` -> `passed` (0 warnings, 0 errors)
@@ -79,6 +84,8 @@
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (42 tests)
 - `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (33 tests)
 - `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (44 tests)
+- `dotnet test "Tests/Zelanthus.WorkflowContractProofs.Tests/Zelanthus.WorkflowContractProofs.Tests.csproj" --filter "Category!=LiveGemini"` -> `passed` (36 tests)
+- `dotnet test "Zelanthus.slnx" --filter "Category!=LiveGemini"` -> `passed` (47 tests)
 
 ## Issues
 - none
