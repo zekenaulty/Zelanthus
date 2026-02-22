@@ -265,6 +265,102 @@ public sealed class ChainRunnerContractProofTests
     }
 
     [Fact]
+    public async Task ChainRunner_NonResumeRequest_WithEffectiveStepsOverride_EmitsInvalidStateTransition()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "non-resume-effective-steps-override",
+            WorkflowKind.CognitiveChain,
+            [
+                CreateWorkflowStep("0010-plan-step", StepKind.PlanStep),
+                CreateWorkflowStep("0020-execute-step", StepKind.Execute),
+            ]);
+
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(
+            workflow,
+            runCursor,
+            workflow.Steps));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(RunState.FailedTerminal, result.WorkflowRunCursor.RunState);
+        Assert.Equal(0, stepExecutor.Invocations);
+    }
+
+    [Fact]
+    public async Task ChainRunner_ConversationalChain_RehydratedSteps_NotAlignedWithDefinition_EmitsInvalidStateTransition()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "conversation-resume-invalid-rehydration",
+            WorkflowKind.ConversationalChain,
+            [
+                CreateWorkflowStep("0010-conversation-step", StepKind.ConversationStep),
+                CreateWorkflowStep("0020-conversation-step", StepKind.ConversationStep),
+            ]);
+
+        var runCursor = new WorkflowRunCursor(
+            Guid.NewGuid(),
+            workflow.WorkflowKey,
+            workflow.WorkflowVersion,
+            WorkflowKind.ConversationalChain,
+            RunState.Created,
+            currentStepIndex: 1,
+            lastSuccessStepIndex: 0,
+            nextTurnIndex: 1,
+            nextCheckpointSequence: 1,
+            latestThinkingPersistenceKey: null);
+
+        var invalidFirstStep = new WorkflowStepDefinition(
+            "0010-conversation-step",
+            StepKind.Execute,
+            new PromptReference("story.chapter.plan", 2),
+            inputContractReference: "input.contract",
+            outputContractReference: "output.contract");
+        var effectiveSteps = new[] { invalidFirstStep, workflow.Steps[1] };
+
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(
+            workflow,
+            runCursor,
+            effectiveSteps));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(RunState.FailedTerminal, result.WorkflowRunCursor.RunState);
+        Assert.Equal(0, stepExecutor.Invocations);
+    }
+
+    [Fact]
+    public async Task ChainRunner_StepExecutorThrows_EmitsTerminalFailureAndTransitionsRunState()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "step-executor-throws",
+            WorkflowKind.CognitiveChain,
+            [CreateWorkflowStep("0010-plan-step", StepKind.PlanStep)]);
+
+        var runCursor = CreateRunCursor(Guid.NewGuid(), workflow);
+        var stepExecutor = new ThrowingStepExecutor();
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor));
+
+        Assert.False(result.IsSuccess);
+        Assert.False(result.IsRetryableFailure);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(RunState.FailedTerminal, result.WorkflowRunCursor.RunState);
+        Assert.Equal(1, stepExecutor.Invocations);
+    }
+
+    [Fact]
     public void ChainRunner_StateMachine_IllegalTransition_EmitsInvalidStateTransitionReasonCode()
     {
         var exception = Assert.Throws<InvalidOperationException>(
@@ -870,6 +966,19 @@ public sealed class ChainRunnerContractProofTests
                 ? cancellationToken
                 : new CancellationToken(canceled: true);
             return Task.FromCanceled<WorkflowStepExecutionResult>(canceledToken);
+        }
+    }
+
+    private sealed class ThrowingStepExecutor : IWorkflowStepExecutor
+    {
+        public int Invocations { get; private set; }
+
+        public Task<WorkflowStepExecutionResult> ExecuteAsync(
+            WorkflowStepExecutionContext executionContext,
+            CancellationToken cancellationToken = default)
+        {
+            Invocations++;
+            throw new InvalidOperationException("executor fault");
         }
     }
 }
