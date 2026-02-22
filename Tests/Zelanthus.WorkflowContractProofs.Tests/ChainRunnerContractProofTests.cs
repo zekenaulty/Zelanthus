@@ -173,11 +173,95 @@ public sealed class ChainRunnerContractProofTests
             resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
         var runner = new WorkflowRunner(stepExecutor);
 
-        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor));
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(
+            workflow,
+            runCursor,
+            workflow.Steps));
 
         Assert.True(result.IsSuccess);
         Assert.Null(result.PolicyReasonCode);
         Assert.Equal(1, stepExecutor.ExecutedStepIndices[0]);
+    }
+
+    [Fact]
+    public async Task ChainRunner_ConversationalChain_InterruptedRun_WithoutRehydratedSteps_EmitsInvalidStateTransition()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "conversation-resume-missing-rehydration",
+            WorkflowKind.ConversationalChain,
+            [
+                CreateWorkflowStep("0010-conversation-step", StepKind.ConversationStep),
+                CreateWorkflowStep("0020-conversation-step", StepKind.ConversationStep),
+                CreateWorkflowStep("0030-conversation-step", StepKind.ConversationStep),
+            ]);
+
+        var runCursor = new WorkflowRunCursor(
+            Guid.NewGuid(),
+            workflow.WorkflowKey,
+            workflow.WorkflowVersion,
+            WorkflowKind.ConversationalChain,
+            RunState.Created,
+            currentStepIndex: 1,
+            lastSuccessStepIndex: 0,
+            nextTurnIndex: 2,
+            nextCheckpointSequence: 2,
+            latestThinkingPersistenceKey: null);
+
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(workflow, runCursor));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(RunnerReasonCodes.InvalidStateTransition, result.ReasonCode);
+        Assert.Equal(0, stepExecutor.Invocations);
+    }
+
+    [Fact]
+    public async Task ChainRunner_ConversationalChain_RehydratedSteps_ExecuteAppendedTail()
+    {
+        var workflow = CreateWorkflowDefinition(
+            "conversation-resume-rehydrated-tail",
+            WorkflowKind.ConversationalChain,
+            [
+                CreateWorkflowStep("0010-conversation-step", StepKind.ConversationStep),
+                CreateWorkflowStep("0020-conversation-step", StepKind.ConversationStep),
+            ]);
+
+        var runCursor = new WorkflowRunCursor(
+            Guid.NewGuid(),
+            workflow.WorkflowKey,
+            workflow.WorkflowVersion,
+            WorkflowKind.ConversationalChain,
+            RunState.Created,
+            currentStepIndex: 1,
+            lastSuccessStepIndex: 0,
+            nextTurnIndex: 1,
+            nextCheckpointSequence: 1,
+            latestThinkingPersistenceKey: null);
+
+        var appendedStep = CreateWorkflowStep("0100-conversation-step", StepKind.ConversationStep);
+        var effectiveSteps = workflow.Steps.Concat([appendedStep]).ToArray();
+
+        var stepExecutor = new ArtifactPersistingStepExecutor(
+            new LocalFileWorkflowRunStore(CreateWorkflowRunPaths()),
+            resultFactory: _ => WorkflowStepExecutionResult.Succeeded());
+        var runner = new WorkflowRunner(stepExecutor);
+
+        var result = await runner.RunAsync(new WorkflowExecutionRequest(
+            workflow,
+            runCursor,
+            effectiveSteps));
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(
+            ["0020-conversation-step", "0100-conversation-step"],
+            stepExecutor.ExecutedStepKeys);
+        Assert.Equal(
+            ["0010-conversation-step", "0020-conversation-step", "0100-conversation-step"],
+            result.EffectiveStepKeys);
     }
 
     [Fact]
@@ -575,6 +659,49 @@ public sealed class ChainRunnerContractProofTests
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => runStore.SaveRunRecordAsync(runRecord, cancellation.Token));
+    }
+
+    [Fact]
+    public async Task LocalFileWorkflowRunStore_SaveRunRecord_WithSharedReadHandle_AllowsOverwrite()
+    {
+        var runPaths = CreateWorkflowRunPaths();
+        var runStore = new LocalFileWorkflowRunStore(runPaths);
+        var runId = Guid.NewGuid();
+
+        var firstRecord = new WorkflowRunRecord(
+            runId,
+            WorkflowKey: "workflow.shared-read-overwrite",
+            WorkflowVersion: 1,
+            WorkflowKind: WorkflowKind.CognitiveChain.ToString(),
+            RunState: RunState.Created.ToString(),
+            CurrentStepIndex: 0,
+            LastSuccessStepIndex: -1,
+            NextTurnIndex: 0,
+            NextCheckpointSequence: 0,
+            LatestThinkingPersistenceKey: null,
+            EffectiveStepKeys: ["0010-plan-step"],
+            UpdatedUtc: DateTimeOffset.UtcNow);
+
+        await runStore.SaveRunRecordAsync(firstRecord);
+
+        var runRecordPath = runPaths.GetRunRecordPath(runId);
+        using var sharedReader = new FileStream(
+            runRecordPath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.ReadWrite | FileShare.Delete);
+
+        var secondRecord = firstRecord with
+        {
+            NextCheckpointSequence = 1,
+            UpdatedUtc = DateTimeOffset.UtcNow,
+        };
+
+        await runStore.SaveRunRecordAsync(secondRecord);
+        var reloadedRecord = await runStore.ReadRunRecordAsync(runId);
+
+        Assert.NotNull(reloadedRecord);
+        Assert.Equal(1, reloadedRecord!.NextCheckpointSequence);
     }
 
     private static WorkflowDefinition CreateWorkflowDefinition(

@@ -7,6 +7,8 @@ namespace Zelanthus.Prompting.Rendering;
 
 public sealed partial class PromptRenderer : IPromptRenderer
 {
+    private const string EmptyPlaceholderMarker = "<empty-placeholder>";
+
     public PromptRenderResult Render(
         PromptTemplateDefinition templateDefinition,
         IReadOnlyDictionary<string, string?> placeholderValues)
@@ -16,9 +18,10 @@ public sealed partial class PromptRenderer : IPromptRenderer
 
         ValidatePlaceholderValueKeys(placeholderValues);
 
-        var templatePlaceholderKeys = ExtractTemplatePlaceholderKeys(templateDefinition.TemplateText);
+        var templatePlaceholderExtraction = ExtractTemplatePlaceholderKeys(templateDefinition.TemplateText);
         var missingPlaceholders = templateDefinition.RequiredPlaceholders
-            .Concat(templatePlaceholderKeys)
+            .Concat(templatePlaceholderExtraction.TemplatePlaceholders)
+            .Concat(templatePlaceholderExtraction.HasEmptyPlaceholderToken ? [EmptyPlaceholderMarker] : [])
             .Where(requiredPlaceholder =>
                 !placeholderValues.TryGetValue(requiredPlaceholder, out var value) ||
                 value is null)
@@ -64,14 +67,26 @@ public sealed partial class PromptRenderer : IPromptRenderer
         }
     }
 
-    private static IReadOnlyList<string> ExtractTemplatePlaceholderKeys(string templateText)
+    private static PlaceholderExtraction ExtractTemplatePlaceholderKeys(string templateText)
     {
-        return PlaceholderTokenPattern().Matches(templateText)
-            .Select(match => match.Groups["placeholder"].Value.Trim())
+        var hasEmptyPlaceholderToken = false;
+        var placeholders = PlaceholderTokenPattern().Matches(templateText)
+            .Select(match =>
+            {
+                var placeholder = match.Groups["placeholder"].Value.Trim();
+                if (placeholder.Length == 0)
+                {
+                    hasEmptyPlaceholderToken = true;
+                }
+
+                return placeholder;
+            })
             .Where(placeholder => placeholder.Length > 0)
             .Distinct(StringComparer.Ordinal)
             .OrderBy(placeholder => placeholder, StringComparer.Ordinal)
             .ToArray();
+
+        return new PlaceholderExtraction(placeholders, hasEmptyPlaceholderToken);
     }
 
     private static string ReplaceTemplatePlaceholders(
@@ -110,4 +125,8 @@ public sealed partial class PromptRenderer : IPromptRenderer
         return value.Replace("\r\n", "\n", StringComparison.Ordinal)
             .Replace('\r', '\n');
     }
+
+    private readonly record struct PlaceholderExtraction(
+        IReadOnlyList<string> TemplatePlaceholders,
+        bool HasEmptyPlaceholderToken);
 }

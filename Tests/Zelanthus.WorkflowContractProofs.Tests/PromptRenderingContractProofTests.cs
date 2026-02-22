@@ -170,4 +170,26 @@ public sealed class PromptRenderingContractProofTests
         var renderedPrompt = Assert.IsType<RenderedPrompt>(result.RenderedPrompt);
         Assert.Equal("Objective: Plan chapter outline\nTone: analytical", renderedPrompt.RenderedText);
     }
+
+    [Fact]
+    public void PromptRendering_TemplateContainsEmptyPlaceholderToken_ReturnsDeterministicFailure()
+    {
+        var template = new PromptTemplateDefinition(
+            promptId: "story.chapter.plan",
+            promptVersion: 1,
+            templateText: "Objective: {{objective}}\nBroken: {{   }}",
+            requiredPlaceholders: ["objective"]);
+
+        var result = _renderer.Render(
+            template,
+            new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["objective"] = "Plan chapter outline",
+            });
+
+        Assert.False(result.IsSuccess);
+        var failure = Assert.IsType<RenderFailure>(result.RenderFailure);
+        Assert.Equal(PromptReasonCodes.MissingRequiredPlaceholder, failure.ReasonCode);
+        Assert.Equal(["<empty-placeholder>"], failure.MissingPlaceholders);
+    }
 }

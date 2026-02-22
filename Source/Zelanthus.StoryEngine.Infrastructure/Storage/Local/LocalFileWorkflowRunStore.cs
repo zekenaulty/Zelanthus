@@ -34,7 +34,11 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
 
         try
         {
-            await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            await using var stream = new FileStream(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete);
             var record = await JsonSerializer.DeserializeAsync<WorkflowRunRecord>(stream, SerializerOptions, cancellationToken).ConfigureAwait(false);
             return record;
         }
@@ -101,7 +105,14 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
                 await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            File.Move(temporaryPath, targetPath, overwrite: true);
+            if (File.Exists(targetPath))
+            {
+                File.Replace(temporaryPath, targetPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+            }
+            else
+            {
+                File.Move(temporaryPath, targetPath);
+            }
         }
         catch (OperationCanceledException)
         {

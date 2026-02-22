@@ -41,12 +41,21 @@ public sealed class WorkflowRunner : IWorkflowRunner
                 workflowDefinition.Steps.Select(step => step.StepKey).ToArray());
         }
 
-        var effectiveSteps = workflowDefinition.Steps.ToList();
+        if (RequiresConversationalRehydration(runCursor) && executionRequest.EffectiveWorkflowSteps is null)
+        {
+            MarkTerminalFailureIfRunnable(runCursor);
+            return WorkflowExecutionResult.TerminalFailure(
+                RunnerReasonCodes.InvalidStateTransition,
+                runCursor,
+                workflowDefinition.Steps.Select(step => step.StepKey).ToArray());
+        }
+
+        var effectiveSteps = (executionRequest.EffectiveWorkflowSteps ?? workflowDefinition.Steps).ToList();
         var resumeStart = ResolveStartStepIndex(runCursor);
         var stepIndex = resumeStart.StartStepIndex;
         policyReasonCode = resumeStart.PolicyReasonCode;
 
-        if (stepIndex > effectiveSteps.Count)
+        if (stepIndex >= effectiveSteps.Count)
         {
             MarkTerminalFailureIfRunnable(runCursor);
             return WorkflowExecutionResult.TerminalFailure(
@@ -149,6 +158,12 @@ public sealed class WorkflowRunner : IWorkflowRunner
     {
         return string.Equals(workflowKey, runWorkflowKey, StringComparison.Ordinal)
             && workflowVersion == runWorkflowVersion;
+    }
+
+    private static bool RequiresConversationalRehydration(WorkflowRunCursor runCursor)
+    {
+        return runCursor.WorkflowKind == WorkflowKind.ConversationalChain &&
+            runCursor.CurrentStepIndex > 0;
     }
 
     private static void MarkTerminalFailureIfRunnable(WorkflowRunCursor runCursor)
