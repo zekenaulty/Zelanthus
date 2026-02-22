@@ -9,6 +9,6 @@
 - base-branch: main
 - pr: https://github.com/zekenaulty/Zelanthus/pull/1
 - merge-commit-sha: pending-user-pr-merge
-- completed-package-commit-sha: pending-completed-package-commit
-- cleanup-commit-sha: pending-cleanup-commit
+- completed-package-commit-sha: 5bbb1464c11f687650dfefcdbab79a23065397aa
+- cleanup-commit-sha: a64b4827bd51ef9dff22314a95b5f3c393400c45
 - created-date: 2026-02-21
