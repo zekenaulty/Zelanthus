@@ -801,6 +801,45 @@ public sealed class ChainRunnerContractProofTests
     }
 
     [Fact]
+    public async Task LocalFileWorkflowRunStore_SaveRunRecord_ConcurrentFirstWrite_DoesNotThrow()
+    {
+        var runPaths = CreateWorkflowRunPaths();
+        var runStore = new LocalFileWorkflowRunStore(runPaths);
+        var runId = Guid.NewGuid();
+
+        var firstRecord = new WorkflowRunRecord(
+            runId,
+            WorkflowKey: "workflow.concurrent-first-write",
+            WorkflowVersion: 1,
+            WorkflowKind: WorkflowKind.CognitiveChain.ToString(),
+            RunState: RunState.Created.ToString(),
+            CurrentStepIndex: 0,
+            LastSuccessStepIndex: -1,
+            NextTurnIndex: 0,
+            NextCheckpointSequence: 0,
+            LatestThinkingPersistenceKey: null,
+            EffectiveStepKeys: ["0010-plan-step"],
+            UpdatedUtc: DateTimeOffset.UtcNow);
+
+        var secondRecord = firstRecord with
+        {
+            NextCheckpointSequence = 1,
+            UpdatedUtc = DateTimeOffset.UtcNow,
+        };
+
+        var firstSaveTask = runStore.SaveRunRecordAsync(firstRecord);
+        var secondSaveTask = runStore.SaveRunRecordAsync(secondRecord);
+        await Task.WhenAll(firstSaveTask, secondSaveTask);
+
+        var reloadedRecord = await runStore.ReadRunRecordAsync(runId);
+
+        Assert.NotNull(reloadedRecord);
+        Assert.Contains(
+            reloadedRecord!.NextCheckpointSequence,
+            new[] { 0, 1 });
+    }
+
+    [Fact]
     public async Task LocalFileWorkflowRunStore_ReadRunRecord_NullJsonPayload_ThrowsArtifactReadFailed()
     {
         var runPaths = CreateWorkflowRunPaths();

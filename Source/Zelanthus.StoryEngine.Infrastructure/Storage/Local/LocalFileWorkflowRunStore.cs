@@ -110,14 +110,7 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
                 await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            if (File.Exists(targetPath))
-            {
-                File.Replace(temporaryPath, targetPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
-            }
-            else
-            {
-                File.Move(temporaryPath, targetPath);
-            }
+            ReplaceOrMoveAtomically(temporaryPath, targetPath);
         }
         catch (OperationCanceledException)
         {
@@ -128,6 +121,68 @@ public sealed class LocalFileWorkflowRunStore : IWorkflowRunStore
             throw new InvalidOperationException(
                 $"{writeFailureReasonCode}: failed to write '{targetPath}'.",
                 exception);
+        }
+    }
+
+    private static void ReplaceOrMoveAtomically(string temporaryPath, string targetPath)
+    {
+        try
+        {
+            File.Replace(temporaryPath, targetPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+            return;
+        }
+        catch (FileNotFoundException)
+        {
+            MoveWithCreateRaceHandling(temporaryPath, targetPath);
+            return;
+        }
+        catch (IOException)
+        {
+            OverwriteExistingTargetFromTemporaryFile(temporaryPath, targetPath);
+            return;
+        }
+    }
+
+    private static void MoveWithCreateRaceHandling(string temporaryPath, string targetPath)
+    {
+        try
+        {
+            File.Move(temporaryPath, targetPath);
+        }
+        catch (IOException)
+        {
+            // Another writer may have created the destination between replace and move.
+            File.Replace(temporaryPath, targetPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+        }
+    }
+
+    private static void OverwriteExistingTargetFromTemporaryFile(string temporaryPath, string targetPath)
+    {
+        try
+        {
+            using (var sourceStream = new FileStream(
+                temporaryPath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read))
+            using (var destinationStream = new FileStream(
+                targetPath,
+                FileMode.Open,
+                FileAccess.Write,
+                FileShare.ReadWrite | FileShare.Delete,
+                bufferSize: 16 * 1024,
+                FileOptions.WriteThrough))
+            {
+                destinationStream.SetLength(0);
+                sourceStream.CopyTo(destinationStream);
+                destinationStream.Flush(flushToDisk: true);
+            }
+
+            File.Delete(temporaryPath);
+        }
+        catch (FileNotFoundException)
+        {
+            MoveWithCreateRaceHandling(temporaryPath, targetPath);
         }
     }
 }
