@@ -4,11 +4,12 @@
 - mvp-prompting-gemini-contract-baseline
 
 ## Closure State
-- status: completed-on-feature-branch-pending-main-merge
+- status: completed-on-main
 - branch: feature/thin-clients-first-solution-structure
 - base: main
 - pr: https://github.com/zekenaulty/Zelanthus/pull/1
+- merge-commit-sha: f43fdf1a666f4df9c6b136fa1c359f713179f035
 
 ## Notes
 - Completed package was produced before PR merge per planning workflow.
-- Final merge SHA is populated after user merges PR to main.
+- Merge SHA was populated after PR merge to main.
